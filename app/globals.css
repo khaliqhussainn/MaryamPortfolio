@@ -51,6 +51,9 @@ body {
 .section-beige     { background-color: var(--beige);     color: var(--burgundy-dark); }
 
 /* ─── Buttons ───────────────────────────────────────────── */
+.navbar-resume { display: none !important; }
+@media (min-width: 768px) { .navbar-resume { display: inline-flex !important; } }
+
 .btn-outline-white {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 11px 28px;
