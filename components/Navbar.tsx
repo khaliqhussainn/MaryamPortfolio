@@ -86,12 +86,14 @@ export default function Navbar() {
 
         {/* Resume button + mobile toggle */}
         <div className="flex items-center gap-4">
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn-outline-white hidden md:inline-flex">
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="opacity-75">
-              <path d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 10.5h10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            Resume
-          </a>
+          <div className="hidden md:block">
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn-outline-white">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="opacity-75">
+                <path d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 10.5h10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Resume
+            </a>
+          </div>
 
           {/* Hamburger */}
           <button
