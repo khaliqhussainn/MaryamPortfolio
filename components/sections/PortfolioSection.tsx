@@ -162,6 +162,14 @@ const projects: Project[] = [
     link: "https://resumebuilder-sepia.vercel.app/",
     size: "small",
   },
+  {
+    id: 17, num: "17", title: "Taskflow",               subtitle: "Task Management App",
+    category: "Development",   projectType: "Personal Project",   year: "2026",
+    tags: ["Next.js", "TypeScript", "Productivity"],
+    img: "/images/taskflow.jpeg",
+    link: "https://taskflowtodo.vercel.app/",
+    size: "large",
+  },
 ];
 
 /* ── Individual card ─────────────────────────────────────────── */
@@ -327,9 +335,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 /* ── Filter tabs ─────────────────────────────────────────────── */
 const TABS: { label: Category; count: number }[] = [
-  { label: "All",          count: 16 },
+  { label: "All",          count: 17 },
   { label: "UI/UX Design", count: 6  },
-  { label: "Development",  count: 10 },
+  { label: "Development",  count: 11 },
 ];
 
 /* ── Section ─────────────────────────────────────────────────── */
