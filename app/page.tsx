@@ -1,25 +1,20 @@
-"use client";
+import HorizontalStory from "@/components/HorizontalStory";
+import { Hello, About, Products, Journey, Builds, Skills } from "@/components/scenes/Scenes";
+import Gallery from "@/components/scenes/Gallery";
+import Contact from "@/components/scenes/Contact";
 
-import Navbar            from "@/components/Navbar";
-import HeroSection       from "@/components/sections/HeroSection";
-import AboutSection      from "@/components/sections/AboutSection";
-import PortfolioSection  from "@/components/sections/PortfolioSection";
-import SkillsSection     from "@/components/sections/SkillsSection";
-import ExperienceSection from "@/components/sections/ExperienceSection";
-import ContactSection    from "@/components/sections/ContactSection";
-
+/* The whole site is one sideways story. Scenes play left → right. */
 export default function Home() {
   return (
-    <>
-      <Navbar />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <PortfolioSection />
-        <SkillsSection />
-        <ExperienceSection />
-        <ContactSection />
-      </main>
-    </>
+    <HorizontalStory>
+      <Hello />
+      <About />
+      <Products />
+      <Journey />
+      <Builds />
+      <Gallery />
+      <Skills />
+      <Contact />
+    </HorizontalStory>
   );
 }
