@@ -39,8 +39,7 @@ export default function Contact() {
         <form className="card contact-card" onSubmit={submit}>
           {status === "sent" ? (
             <div className="sent">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/art/maryam-laugh.webp" alt="" />
+              <span className="sent-emoji" aria-hidden>💌</span>
               <h3>Got it — thank you!</h3>
               <p>I&apos;ll get back to you soon.</p>
               <button type="button" className="btn" onClick={() => setStatus("idle")}>Send another</button>

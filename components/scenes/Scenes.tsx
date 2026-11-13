@@ -11,7 +11,15 @@ const tint = (c: string) => ({ "--tint": c }) as CSSProperties;
 export function Hello() {
   return (
     <Scene id="hello">
-      <Col className="hero">
+      <Col
+        className="hero"
+        street={<>
+          <Doodle shape="spark" color="#ffc75a" size={54} spin style={{ left: "58%", bottom: "70%" }} />
+          <Doodle shape="heart" color="#ff5cab" size={44} float style={{ left: "78%", bottom: "92%" }} />
+          <Doodle shape="dashes" color="#7ccf5a" size={36} style={{ left: "88%", bottom: "60%" }} />
+          <Doodle shape="star" color="#bfaaea" size={40} float style={{ left: "68%", bottom: "46%" }} />
+        </>}
+      >
         <div className="hero-copy">
           <span className="chapter-pill"><span className="wave">👋</span> Hey, Salam, Hello!</span>
           <h1>
@@ -26,17 +34,6 @@ export function Hello() {
             <button className="btn btn-pink" onClick={() => goTo("about")}>Walk with me →</button>
             <a className="btn" href={`mailto:${profile.email}`}>Say hi</a>
           </div>
-        </div>
-        <div className="hero-art" aria-hidden>
-          <span className="blob" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="sticker s1" src="/art/maryam-wink.webp" alt="" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="sticker s2" src="/art/maryam-laugh.webp" alt="" />
-          <Doodle shape="spark" color="#ffc75a" size={54} spin style={{ left: "2%", top: "6%" }} />
-          <Doodle shape="heart" color="#ff5cab" size={44} float style={{ right: "4%", top: "2%" }} />
-          <Doodle shape="dashes" color="#7ccf5a" size={36} style={{ right: "0%", bottom: "10%" }} />
-          <Doodle shape="star" color="#bfaaea" size={40} float style={{ left: "6%", bottom: "6%" }} />
         </div>
       </Col>
     </Scene>
@@ -54,8 +51,6 @@ export function About() {
       <Col street={<Signpost text="hi, it's me" color="#ffc75a" left="30%" />}>
         <div className="card bubble about-card">
           <Doodle shape="heart" color="#ff5cab" size={46} float style={{ left: "-1em", top: "-1.5em" }} />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="about-face" src="/art/maryam-smile.webp" alt="Illustration of Maryam smiling" />
           <p>{profile.summary}</p>
           <p className="about-note"><Icon name="code" size={18} /> Hands-on with AI, OAuth, billing &amp; databases</p>
         </div>
