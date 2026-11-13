@@ -39,7 +39,7 @@ export default function Contact() {
         <form className="card contact-card" onSubmit={submit}>
           {status === "sent" ? (
             <div className="sent">
-              <span className="sent-emoji" aria-hidden>💌</span>
+              <Doodle shape="heart" color="#ff5cab" size={58} float style={{ position: "relative" }} />
               <h3>Got it — thank you!</h3>
               <p>I&apos;ll get back to you soon.</p>
               <button type="button" className="btn" onClick={() => setStatus("idle")}>Send another</button>

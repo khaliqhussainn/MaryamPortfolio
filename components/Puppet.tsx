@@ -34,6 +34,7 @@ export default function Puppet({ box }: { box: React.RefObject<HTMLDivElement | 
     const untrack = box.current ? trackPointer(box.current) : () => {};
     let raf = 0, last = performance.now();
     /* which view is showing, and the turn in progress */
+    let liftCss = "";
     let sideOn = false, facing = 1, turn = 0, swapped = true, wantSide = false, wantFacing = 1;
 
     const frame = (now: number) => {
@@ -79,7 +80,8 @@ export default function Puppet({ box }: { box: React.RefObject<HTMLDivElement | 
       e.hop!.style.transform = `translateY(${-lift}%) scaleY(${squashY})`;
       e.shadow!.style.bottom = `${ground - 1.4}%`;
       e.shadow!.style.opacity = `${1 - Math.min(0.6, (lift - ground) / 30)}`;
-      box.current?.style.setProperty("--lift", (lift * 0.78).toFixed(2));
+      const lc = (lift * 0.78).toFixed(1);
+      if (lc !== liftCss) { liftCss = lc; box.current?.style.setProperty("--lift", lc); }
 
       /* ── side-on while walking, front-facing once she stops ── */
       const want = forceSide || (sideOn ? m.walk > 0.22 : m.moving && m.walk > 0.5);

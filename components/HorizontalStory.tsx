@@ -8,6 +8,9 @@ import { SceneryDefs, Meadow, Clouds, Petals } from "@/components/Scenery";
 /* Vertical scroll (wheel, touch, keys) drives a horizontal track.
    The page is as tall as the track is wide. Each background layer
    moves at its own speed, so the world has depth. */
+/* one sky per chapter; they cross-fade (opacity only, so it stays smooth) */
+const SKIES = ["hello", "about", "products", "journey", "builds", "work", "skills", "contact"];
+
 export default function HorizontalStory({ children }: { children: ReactNode }) {
   const wrap = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -20,6 +23,7 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
   const hint = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState("hello");
   const [trackW, setTrackW] = useState(0);
+  const remeasure = useRef<() => void>(() => {});
 
   useEffect(() => {
     const w = wrap.current!, t = track.current!;
@@ -27,17 +31,25 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
       [clouds.current, 0.2], [far.current, 0.32], [mid.current, 0.58], [petals.current, 0.78],
     ];
     let scenes: { id: string; left: number }[] = [];
+    let lazy: { el: HTMLElement; l: number; r: number; near: boolean }[] = [];
 
     const measure = () => {
       scroll.max = Math.max(0, t.scrollWidth - window.innerWidth);
       w.style.height = `${scroll.max + window.innerHeight}px`;
       for (const [el, k] of layers) if (el) el.style.width = `${window.innerWidth + scroll.max * k + 40}px`;
+      /* positions in track coordinates (the front meadow moves with the track too) */
+      const base = t.getBoundingClientRect().left;
+      lazy = Array.from(document.querySelectorAll<HTMLElement>("[data-lazy]")).map((el) => {
+        const r = el.getBoundingClientRect();
+        return { el, l: r.left - base, r: r.right - base, near: el.hasAttribute("data-near") };
+      });
       scenes = Array.from(t.querySelectorAll<HTMLElement>("[data-scene]")).map((el) => ({
         id: el.id,
         left: el.offsetLeft,
       }));
     };
     const sync = () => { measure(); setTrackW(t.scrollWidth); };
+    remeasure.current = measure;
     const ro = new ResizeObserver(sync);
     ro.observe(t);
     window.addEventListener("resize", sync);
@@ -64,13 +76,19 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
       }
 
       const prev = scroll.x;
-      let nx = prev + (target - prev) * (1 - Math.exp(-dt * 9));
+      let nx = prev + (target - prev) * (1 - Math.exp(-dt * 11));
       if (Math.abs(target - nx) < 0.15) nx = target;
       scroll.x = nx;
       scroll.v = nx - prev;
       t.style.transform = `translate3d(${-nx}px,0,0)`;
       if (front.current) front.current.style.transform = `translate3d(${-nx}px,0,0)`;
       for (const [el, k] of layers) if (el) el.style.transform = `translate3d(${-nx * k}px,0,0)`;
+      /* only things near the screen keep animating */
+      const vw = window.innerWidth;
+      for (const z of lazy) {
+        const near = z.r > nx - 300 && z.l < nx + vw + 300;
+        if (near !== z.near) { z.near = near; z.el.toggleAttribute("data-near", near); }
+      }
       if (bar.current) bar.current.style.transform = `scaleX(${scroll.max ? nx / scroll.max : 0})`;
       if (hint.current) hint.current.style.opacity = nx > 60 ? "0" : "1";
 
@@ -126,12 +144,17 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  /* the flower patches appear once the track width is known: pick them up */
+  useEffect(() => { const r = requestAnimationFrame(() => remeasure.current()); return () => cancelAnimationFrame(r); }, [trackW]);
+
   return (
     <div ref={wrap} className="story-wrap">
       <SceneryDefs />
-      <div className="story-viewport" data-chapter={active}>
+      <div className="story-viewport">
         {/* ── Living background: sky colour shifts with each chapter ── */}
-        <div className="sky-bg" aria-hidden />
+        {SKIES.map((id) => (
+          <div key={id} className={`sky-bg ${active === id ? "on" : ""}`} data-sky={id} aria-hidden />
+        ))}
         <div ref={clouds} className="layer layer-clouds" aria-hidden><Clouds /></div>
         <div ref={far} className="layer layer-far" aria-hidden />
         <div ref={mid} className="layer layer-mid" aria-hidden />

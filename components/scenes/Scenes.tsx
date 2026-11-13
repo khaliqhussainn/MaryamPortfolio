@@ -23,7 +23,7 @@ export function Hello() {
         </>}
       >
         <div className="hero-copy">
-          <p className="hero-hello"><span className="wave">👋</span> Hello!</p>
+          <p className="hero-hello">Hello!</p>
           <h1>
             I&apos;m <mark className="hl-pink">Maryam</mark>,<br />
             I build <mark className="hl-cyan">things</mark> that <mark className="hl-lime">ship</mark>.

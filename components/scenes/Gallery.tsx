@@ -119,7 +119,7 @@ export default function Gallery() {
             {visible.length === 0 && (
               <div className="card shot-empty">
                 <p>First contribution landing soon…</p>
-                <span>watch this space ✿</span>
+                <span>watch this space</span>
               </div>
             )}
           </div>

@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 /* A chapter of the story. */
 export function Scene({ id, children }: { id: string; children: ReactNode }) {
   return (
-    <section id={id} data-scene className="scene">
+    <section id={id} data-scene data-lazy className="scene">
       {children}
     </section>
   );

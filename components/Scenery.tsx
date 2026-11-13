@@ -198,15 +198,21 @@ export const Meadow = memo(function Meadow({ width, layer }: { width: number; la
   }, [width, layer]);
 
   if (!width) return null;
+  /* split into patches: patches far from the screen are skipped and their animations paused */
+  const SEG = 1400, PAD = 60;
+  const segs: (typeof items)[] = [];
+  for (const f of items) (segs[Math.floor(f.x / SEG)] ??= []).push(f);
   return (
     <div className={`meadow meadow-${layer}`} style={{ width }} aria-hidden>
-      {items.map((f, i) => (
+      {segs.map((list, k) => list && (
+        <div key={k} className="m-seg" data-lazy style={{ left: k * SEG - PAD, width: SEG + PAD + 220 }}>
+          {list.map((f, i) => (
         <svg
           key={i}
           className={`m-fl ${f.sway ? "sway" : ""}`}
           viewBox={f.sym === "bush" ? "0 0 100 70" : "0 0 60 100"}
           style={{
-            left: f.x,
+            left: f.x - (k * SEG - PAD),
             bottom: `calc(var(--ground) - ${(f.depth * 6.2 + 1.2).toFixed(2)}dvh)`,
             height: `calc(var(--fh) * ${f.scale.toFixed(2)})`,
             aspectRatio: f.ratio,
@@ -217,6 +223,8 @@ export const Meadow = memo(function Meadow({ width, layer }: { width: number; la
         >
           <use href={`#${f.sym}`} />
         </svg>
+          ))}
+        </div>
       ))}
     </div>
   );
