@@ -39,7 +39,6 @@ export function buildCharacter(THREE: typeof THREE_NS) {
   const mJeans = std(C.jeans, 0.95, 0.05);
   const mShoe = std(C.shoe, 0.7, 0.1);
   const mSole = std(C.sole, 0.8, 0.05);
-  const mHair = std(C.hair, 0.55, 0.0);
   const mHijab = new THREE.MeshPhysicalMaterial({
     color: C.hijab, roughness: 0.85, metalness: 0,
     sheen: 1, sheenColor: new THREE.Color(0x6a6a78), sheenRoughness: 0.45,
