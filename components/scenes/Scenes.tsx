@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { profile, stats, education, products, experience, builds, skills } from "@/data/content";
 import { goTo } from "@/lib/scrollStore";
 import { Scene, Col, Chapter, Doodle, Signpost, Icon, IconTile } from "./Bits";
+import NavPost from "@/components/NavPost";
 
 /* soft tints used on cards (mixed from the brand palette in CSS) */
 const tint = (c: string) => ({ "--tint": c }) as CSSProperties;
@@ -17,14 +18,12 @@ export function Hello() {
       <Col
         className="hero"
         street={<>
-          <Doodle shape="spark" color="#ffc75a" size={54} spin style={{ left: "58%", bottom: "70%" }} />
-          <Doodle shape="heart" color="#ff5cab" size={44} float style={{ left: "78%", bottom: "92%" }} />
-          <Doodle shape="dashes" color="#7ccf5a" size={36} style={{ left: "88%", bottom: "60%" }} />
-          <Doodle shape="star" color="#bfaaea" size={40} float style={{ left: "68%", bottom: "46%" }} />
+          <Doodle shape="spark" color="#ffc75a" size={50} spin style={{ left: "47%", bottom: "44%" }} />
+          <Doodle shape="star" color="#bfaaea" size={38} float style={{ left: "57%", bottom: "28%" }} />
         </>}
       >
         <div className="hero-copy">
-          <span className="chapter-pill"><span className="wave">👋</span> Hey, Salam, Hello!</span>
+          <p className="hero-hello"><span className="wave">👋</span> Hello!</p>
           <h1>
             I&apos;m <mark className="hl-pink">Maryam</mark>,<br />
             I build <mark className="hl-cyan">things</mark> that <mark className="hl-lime">ship</mark>.
@@ -39,6 +38,9 @@ export function Hello() {
           </div>
         </div>
       </Col>
+      <NavPost className="navpost-hero" />
+      {/* on phones the signpost gets its own stop, right after the hello */}
+      <div className="navpost-col"><NavPost /></div>
     </Scene>
   );
 }

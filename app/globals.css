@@ -19,7 +19,7 @@
   --mint: #BBFFC6;
   --cyan: #2FE3F8;
 
-  --nav-h: 64px;
+  --nav-h: 22px; /* top breathing room (there is no header bar) */
   --street-h: 38dvh;
   --ground: 10dvh;                 /* top edge of the lawn */
   --lawn: 12dvh;                   /* lawn thickness */
@@ -59,7 +59,7 @@ body {
 button { font: inherit; color: inherit; cursor: pointer; }
 a { color: inherit; }
 h1, h2, h3, h4, p, ul { margin: 0; }
-h1, h2, h3, h4, .logo, .btn, .pill, .signpost span, .mascot-says, .chapter-pill { font-family: var(--display); }
+h1, h2, h3, h4, .btn, .pill, .signpost span, .mascot-says, .chapter-pill { font-family: var(--display); }
 mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 0.34em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .hl-pink  { background: color-mix(in srgb, var(--pink) 30%, #fff); }
 .hl-cyan  { background: color-mix(in srgb, var(--cyan) 34%, #fff); }
@@ -140,32 +140,12 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 .m-fl.sway { animation: sway ease-in-out infinite; }
 @keyframes sway { 0%, 100% { transform: rotate(-3.5deg); } 50% { transform: rotate(4.5deg); } }
 
-/* ─── Nav ────────────────────────────────────────────────── */
-.topnav {
-  position: absolute; inset: 0 0 auto 0; height: var(--nav-h); z-index: 50;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 0 clamp(14px, 3vw, 40px);
-  background: rgba(255, 252, 255, 0.72); backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(196, 160, 230, 0.3);
-}
-.logo { background: none; border: 0; padding: 0; font-weight: 700; font-size: 27px; letter-spacing: -0.02em; color: var(--ink); }
-.logo span { color: var(--pink); }
-.navlinks { display: flex; align-items: center; gap: 4px; }
-.navlinks button, .nav-resume {
-  background: transparent; border: 0; border-radius: 999px;
-  padding: 7px 17px; font-family: var(--display); font-weight: 600; font-size: 15.5px; text-decoration: none;
-  transition: background 0.2s, color 0.2s, transform 0.2s;
-}
-.navlinks button:hover { background: color-mix(in srgb, var(--lilac) 28%, #fff); }
-.navlinks button.on { background: color-mix(in srgb, var(--pink) 20%, #fff); color: #c4146b; }
-.nav-resume { background: #22112d; color: #fff; margin-left: 10px; padding: 9px 22px; box-shadow: 0 8px 18px rgba(34, 17, 45, 0.28); }
-.nav-resume:hover { background: #3a1d4c; transform: translateY(-2px); }
-.menu-btn { display: none; border: var(--edge); background: #fff; border-radius: 999px; padding: 6px 18px; font-family: var(--display); font-weight: 600; box-shadow: 0 6px 14px rgba(170, 120, 214, 0.2); }
-.progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; }
+/* ─── Progress ───────────────────────────────────────────── */
+.progress { position: absolute; left: 0; right: 0; top: 0; height: 4px; z-index: 50; }
 .progress div { height: 100%; background: linear-gradient(90deg, #ff8cc8, var(--pink)); transform-origin: left; transform: scaleX(0); border-radius: 0 3px 3px 0; }
 
 .scroll-hint {
-  position: absolute; right: clamp(16px, 4vw, 48px); bottom: calc(var(--ground) + 4dvh); z-index: 40;
+  position: absolute; right: calc(clamp(32px, 6dvh, 58px) * 5 + clamp(10px, 3vw, 60px) + 10px); bottom: 2.4dvh; z-index: 40;
   font-family: var(--display); font-weight: 600; font-size: 16px; background: rgba(255, 255, 255, 0.92); border: var(--edge); border-radius: 999px;
   padding: 7px 20px; box-shadow: var(--shadow); transition: opacity 0.4s; pointer-events: none;
   animation: nudge 1.4s ease-in-out infinite;
@@ -270,7 +250,7 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 
 /* ─── 00 Hello ───────────────────────────────────────────── */
 .hero { width: 100vw; }
-.hero .col-stage { padding: 1em clamp(20px, 4vw, 70px) 1em calc(var(--hut-left) + var(--hut-w) + clamp(20px, 3vw, 56px)); }
+.hero .col-stage { padding: 1em calc(clamp(32px, 6dvh, 58px) * 4.7 + clamp(10px, 3vw, 60px) + 16px) 1em calc(var(--hut-left) + var(--hut-w) + clamp(20px, 3vw, 56px)); }
 /* the hut, cut from the reference art; its doorway lines up with where she stands */
 .hut {
   position: absolute; z-index: 2; pointer-events: none; user-select: none;
@@ -280,11 +260,52 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 }
 .wave { display: inline-block; transform-origin: 70% 80%; animation: wave 1.8s ease-in-out infinite; }
 @keyframes wave { 0%, 60%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(16deg); } 20%, 40% { transform: rotate(-8deg); } }
-.hero h1 { font-size: clamp(30px, min(7.6dvh, 4.6vw), 84px); line-height: 1.12; font-weight: 700; letter-spacing: -0.025em; margin: 0.35em 0 0.3em; color: #20102b; }
+.hero h1 { font-size: clamp(28px, min(6.6dvh, 3.9vw), 76px); line-height: 1.12; font-weight: 700; letter-spacing: -0.025em; margin: 0.35em 0 0.3em; color: #20102b; }
 .hero-role { font-size: 1.22em; font-weight: 600; }
 .hero-role span { display: block; font-weight: 600; font-size: 0.95em; color: var(--link); }
 .hero-cta { display: flex; gap: 1em; margin-top: 1.4em; flex-wrap: wrap; }
 @keyframes bobble { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(3deg) translateY(-8px); } }
+
+.hero-hello { font-family: var(--display); font-weight: 600; font-size: 1.45em; color: var(--ink); }
+
+/* ─── Signpost navigation ─────────────────────────────────── */
+/* pk = plank height; everything else is in proportion to the reference art */
+.navpost {
+  --pk: clamp(32px, 6dvh, 58px);
+  position: absolute; z-index: 3; bottom: calc(var(--feet) - var(--pk) * 0.12);
+  width: calc(var(--pk) * 5); height: calc(var(--pk) * 10.75);
+  pointer-events: none;
+}
+.navpost-hero { right: clamp(10px, 3vw, 60px); }
+.navpost-col { display: none; }
+.np-post { position: absolute; left: 50%; top: 0; bottom: calc(var(--pk) * 1.6); width: calc(var(--pk) * 0.727); transform: translateX(-50%); }
+.np-cap { position: absolute; left: 0; top: 0; width: 100%; height: auto; display: block; }
+.np-pole { position: absolute; left: 0.5%; right: 0.5%; top: calc(var(--pk) * 0.58); bottom: 0; background: url(/art/sign/post.png) 0 0 / 100% 100%; }
+.np-base { position: absolute; bottom: 0; left: calc(50% - var(--pk) * 1.96); width: calc(var(--pk) * 3.885); height: auto; filter: drop-shadow(0 10px 14px rgba(110, 70, 140, 0.18)); }
+.navpost ul { list-style: none; margin: 0; padding: 0; }
+.navpost li {
+  position: absolute; top: calc(var(--pk) * (0.72 + var(--i) * 0.98)); height: var(--pk); width: calc(var(--pk) * 3);
+  pointer-events: auto; transform: rotate(var(--tilt)); transition: transform 0.35s cubic-bezier(.3, 1.6, .5, 1);
+}
+.np-right { left: calc(50% - var(--pk) * 0.78); transform-origin: 26% 50%; }
+.np-left  { left: calc(50% - var(--pk) * 2.22); transform-origin: 74% 50%; }
+.np-right:hover { transform: rotate(calc(var(--tilt) * -1.4)) translateX(calc(var(--pk) * 0.1)); }
+.np-left:hover  { transform: rotate(calc(var(--tilt) * -1.4)) translateX(calc(var(--pk) * -0.1)); }
+.np-plank {
+  position: relative; display: flex; align-items: center; width: 100%; height: 100%; padding: 0;
+  background: none; border: 0; text-decoration: none; cursor: pointer;
+  filter: drop-shadow(0 6px 8px rgba(120, 70, 40, 0.18));
+}
+.np-plank::before { content: ""; position: absolute; inset: 0; background: url(/art/sign/plank.webp) center / 100% 100% no-repeat; }
+.np-left .np-plank::before { transform: scaleX(-1); }
+.np-plank span {
+  position: relative; width: 100%; padding: 0 22% 0 25%; text-align: center; white-space: nowrap;
+  font-family: var(--display); font-weight: 600; font-size: calc(var(--pk) * 0.36); line-height: 1;
+  color: #7a4421; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.np-left .np-plank span { padding: 0 25% 0 22%; }
+.np-plank:hover span { color: #c4146b; }
+.np-plank:focus-visible { outline-offset: 2px; border-radius: 10px; }
 
 /* ─── 01 About ───────────────────────────────────────────── */
 .about-card { width: 27em; padding: 1.7em 1.8em 1.5em; font-size: 1.06em; background: rgba(255, 255, 255, 0.92); }
@@ -479,28 +500,22 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 
 /* ─── Small screens ──────────────────────────────────────── */
 @media (max-width: 860px) {
-  :root { --nav-h: 56px; --street-h: 36dvh; }
+  :root { --nav-h: 14px; --street-h: 36dvh; }
   :root { --ph: clamp(160px, 29dvh, 300px); --hut-left: -4px; }
-  .menu-btn { display: block; }
-  .navlinks {
-    position: absolute; top: calc(var(--nav-h) + 8px); right: 12px; flex-direction: column; align-items: stretch; gap: 2px;
-    background: rgba(255, 255, 255, 0.96); border: var(--edge); border-radius: 22px; padding: 10px; box-shadow: var(--shadow-up);
-    transform-origin: top right; transform: scale(0.6); opacity: 0; pointer-events: none; transition: transform 0.2s, opacity 0.2s;
-  }
-  .navlinks.open { transform: scale(1); opacity: 1; pointer-events: auto; }
-  .navlinks button { text-align: left; font-size: 17px; }
-  .nav-resume { margin: 6px 0 0; text-align: center; }
   .col-stage { padding: 0.8em 1em 1em; gap: 1.2em; font-size: clamp(11px, 1.85dvh, 15.5px); }
   .chapter .col-stage { padding-left: 22px; }
   .hero .col-stage { padding: 0.4em 22px; align-items: flex-start; }
   .hero h1 { font-size: clamp(26px, min(5.6dvh, 9vw), 52px); }
+  .navpost-hero { display: none; }
+  .navpost-col { display: block; position: relative; flex: none; width: calc(clamp(30px, 5.4dvh, 48px) * 5 + 60px); }
+  .navpost-col .navpost { --pk: clamp(30px, 5.4dvh, 48px); left: 30px; }
   .about-card { width: min(24em, 84vw); }
     .contact-card .row { grid-template-columns: 1fr; gap: 0.6em; }
   .contact-card textarea { height: 3.6em; }
   .scroll-hint { font-size: 14px; bottom: 2.2dvh; right: 14px; }
 }
 @media (max-height: 520px) {
-  :root { --street-h: 36dvh; --nav-h: 48px; }
+  :root { --street-h: 36dvh; --nav-h: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

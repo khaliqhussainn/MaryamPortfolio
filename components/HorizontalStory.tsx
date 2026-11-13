@@ -1,19 +1,9 @@
 "use client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { scroll, goTo, intro, INTRO } from "@/lib/scrollStore";
-import { profile } from "@/data/content";
+import { scroll, intro, INTRO } from "@/lib/scrollStore";
 import Persona from "@/components/Persona";
 import { SceneryDefs, Meadow, Clouds, Petals } from "@/components/Scenery";
 
-const NAV = [
-  { id: "about", label: "About" },
-  { id: "products", label: "Products" },
-  { id: "journey", label: "Journey" },
-  { id: "builds", label: "Builds" },
-  { id: "work", label: "Work" },
-  { id: "skills", label: "Skills" },
-  { id: "contact", label: "Contact" },
-];
 
 /* Vertical scroll (wheel, touch, keys) drives a horizontal track.
    The page is as tall as the track is wide. Each background layer
@@ -29,7 +19,6 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
   const bar = useRef<HTMLDivElement>(null);
   const hint = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState("hello");
-  const [menu, setMenu] = useState(false);
   const [trackW, setTrackW] = useState(0);
 
   useEffect(() => {
@@ -137,8 +126,6 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const go = (id: string) => { setMenu(false); goTo(id); };
-
   return (
     <div ref={wrap} className="story-wrap">
       <SceneryDefs />
@@ -164,24 +151,7 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
           <Meadow width={trackW} layer="front" />
         </div>
 
-        {/* Nav */}
-        <header className="topnav">
-          <button className="logo" onClick={() => go("hello")} aria-label="Back to the start">
-            maryam<span>.</span>
-          </button>
-          <nav className={`navlinks ${menu ? "open" : ""}`}>
-            {NAV.map((n) => (
-              <button key={n.id} className={active === n.id ? "on" : ""} onClick={() => go(n.id)}>
-                {n.label}
-              </button>
-            ))}
-            <a className="nav-resume" href={profile.resume} target="_blank" rel="noopener noreferrer">Resume ↗</a>
-          </nav>
-          <button className="menu-btn" onClick={() => setMenu(!menu)} aria-label="Toggle menu" aria-expanded={menu}>
-            {menu ? "Close" : "Menu"}
-          </button>
-          <div className="progress" aria-hidden><div ref={bar} /></div>
-        </header>
+        <div className="progress" aria-hidden><div ref={bar} /></div>
 
         <div ref={hint} className="scroll-hint" aria-hidden>
           Scroll to walk <span>→</span>
