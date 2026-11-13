@@ -34,7 +34,8 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
     let lazy: { el: HTMLElement; l: number; r: number; near: boolean }[] = [];
 
     const measure = () => {
-      scroll.max = Math.max(0, t.scrollWidth - window.innerWidth);
+      /* the track's real width: scenes only (scrollWidth also counts overhanging decorations) */
+      scroll.max = Math.max(0, t.offsetWidth - window.innerWidth);
       w.style.height = `${scroll.max + window.innerHeight}px`;
       for (const [el, k] of layers) if (el) el.style.width = `${window.innerWidth + scroll.max * k + 40}px`;
       /* positions in track coordinates (the front meadow moves with the track too) */
@@ -48,7 +49,7 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
         left: el.offsetLeft,
       }));
     };
-    const sync = () => { measure(); setTrackW(t.scrollWidth); };
+    const sync = () => { measure(); setTrackW(t.offsetWidth); };
     remeasure.current = measure;
     const ro = new ResizeObserver(sync);
     ro.observe(t);

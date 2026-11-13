@@ -128,7 +128,7 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 .prop { position: absolute; bottom: var(--feet); transform: translateX(-50%); }
 
 /* flowers scattered along the whole road */
-.meadow { position: absolute; left: 0; top: 0; bottom: 0; pointer-events: none; }
+.meadow { position: absolute; left: 0; top: 0; bottom: 0; pointer-events: none; overflow: clip; /* patches never poke past the end of the road */ }
 .meadow-back { z-index: 0; }
 .front-wrap { position: absolute; left: 0; top: 0; bottom: 0; z-index: 35; pointer-events: none; will-change: transform; }
 .m-seg { position: absolute; top: 0; bottom: 0; content-visibility: auto; contain-intrinsic-size: auto 1680px auto 100dvh; }
