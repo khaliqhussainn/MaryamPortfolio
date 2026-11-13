@@ -45,10 +45,10 @@ export default function Persona() {
             <svg viewBox="0 0 240 150" aria-hidden>
               <path
                 d="M58 104C26 106 12 78 34 62 24 36 54 18 76 32 88 8 130 6 144 28 170 12 208 30 198 58 224 64 224 100 192 104 176 118 150 112 142 106 124 120 84 120 58 104Z"
-                fill="#fff" stroke="#111" strokeWidth="4" strokeLinejoin="round"
+                fill="#fff" stroke="#dcc8f2" strokeWidth="3" strokeLinejoin="round"
               />
-              <circle cx="74" cy="126" r="9" fill="#fff" stroke="#111" strokeWidth="4" />
-              <circle cx="58" cy="143" r="5" fill="#fff" stroke="#111" strokeWidth="3.5" />
+              <circle cx="74" cy="126" r="9" fill="#fff" stroke="#dcc8f2" strokeWidth="3" />
+              <circle cx="58" cy="143" r="5" fill="#fff" stroke="#dcc8f2" strokeWidth="3" />
             </svg>
             <span>hey, any questions?</span>
           </motion.div>

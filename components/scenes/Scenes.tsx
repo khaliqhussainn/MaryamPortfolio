@@ -1,26 +1,25 @@
 "use client";
+import type { CSSProperties } from "react";
 import { profile, stats, education, products, experience, builds, skills } from "@/data/content";
 import { goTo } from "@/lib/scrollStore";
-import { Scene, Col, Chapter, Doodle, Sprout, Signpost } from "./Bits";
+import { Scene, Col, Chapter, Doodle, Signpost, Icon, IconTile } from "./Bits";
+
+/* soft tints used on cards (mixed from the brand palette in CSS) */
+const tint = (c: string) => ({ "--tint": c }) as CSSProperties;
 
 /* ── 00 · Hello ──────────────────────────────────────────────── */
 export function Hello() {
   return (
-    <Scene id="hello" tint="#DCFF73">
-      <Col
-        className="hero"
-        street={<>
-          <Sprout left="46%" flower="#FF5CAB" /><Sprout left="68%" /><Sprout left="90%" flower="#FFC75A" />
-        </>}
-      >
+    <Scene id="hello">
+      <Col className="hero">
         <div className="hero-copy">
-          <p className="hand hero-hi">hey, salam, hello! <span className="wave">👋</span></p>
+          <span className="chapter-pill"><span className="wave">👋</span> Hey, Salam, Hello!</span>
           <h1>
-            I&apos;m <mark style={{ background: "#FF5CAB" }}>Maryam</mark>,<br />
-            I build <mark style={{ background: "#2FE3F8" }}>things</mark> that <mark style={{ background: "#DCFF73" }}>ship</mark>.
+            I&apos;m <mark className="hl-pink">Maryam</mark>,<br />
+            I build <mark className="hl-cyan">things</mark> that <mark className="hl-lime">ship</mark>.
           </h1>
           <p className="hero-role">
-            {profile.role} · {profile.focus}<br />
+            {profile.role} · {profile.focus}
             <span>{profile.location}</span>
           </p>
           <div className="hero-cta">
@@ -29,15 +28,15 @@ export function Hello() {
           </div>
         </div>
         <div className="hero-art" aria-hidden>
-          <span className="blob" style={{ background: "#BFAAEA" }} />
+          <span className="blob" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="sticker s1" src="/art/maryam-wink.webp" alt="" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="sticker s2" src="/art/maryam-laugh.webp" alt="" />
-          <Doodle shape="spark" color="#FFC75A" size={54} spin style={{ left: "2%", top: "6%" }} />
-          <Doodle shape="heart" color="#FF5CAB" size={40} float style={{ right: "4%", top: "2%" }} />
-          <Doodle shape="star" color="#2FE3F8" size={44} float style={{ right: "0%", bottom: "6%" }} />
-          <Doodle shape="squiggle" color="#FC7B1E" size={46} style={{ left: "8%", bottom: "2%" }} />
+          <Doodle shape="spark" color="#ffc75a" size={54} spin style={{ left: "2%", top: "6%" }} />
+          <Doodle shape="heart" color="#ff5cab" size={44} float style={{ right: "4%", top: "2%" }} />
+          <Doodle shape="dashes" color="#7ccf5a" size={36} style={{ right: "0%", bottom: "10%" }} />
+          <Doodle shape="star" color="#bfaaea" size={40} float style={{ left: "6%", bottom: "6%" }} />
         </div>
       </Col>
     </Scene>
@@ -47,37 +46,42 @@ export function Hello() {
 /* ── 01 · About ──────────────────────────────────────────────── */
 export function About() {
   return (
-    <Scene id="about" tint="#BFAAEA">
+    <Scene id="about">
       <Chapter
-        no="01" kicker="who's this?"
-        title={<>a little<br /><mark style={{ background: "#BFAAEA" }}>about me</mark></>}
-        street={<><Sprout left="30%" flower="#DCFF73" /><Sprout left="78%" /></>}
+        no="01" kicker="Who's This?"
+        title={<>A Little<br /><mark className="hl-pink">About Me</mark></>}
       />
-      <Col street={<><Signpost text="hi, it's me" color="#FFC75A" left="30%" /><Sprout left="74%" flower="#FF5CAB" /></>}>
-        <div className="card about-card">
+      <Col street={<Signpost text="hi, it's me" color="#ffc75a" left="30%" />}>
+        <div className="card bubble about-card">
+          <Doodle shape="heart" color="#ff5cab" size={46} float style={{ left: "-1em", top: "-1.5em" }} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="about-face" src="/art/maryam-smile.webp" alt="Illustration of Maryam smiling" />
           <p>{profile.summary}</p>
-          <p className="hand about-note">hands-on with AI, OAuth, billing &amp; databases ✿</p>
+          <p className="about-note"><Icon name="code" size={18} /> Hands-on with AI, OAuth, billing &amp; databases</p>
         </div>
       </Col>
-      <Col street={<><Doodle shape="star" color="#FFC75A" size={42} spin style={{ left: "30%", bottom: "55%" }} /><Sprout left="60%" /></>}>
+      <Col>
         <div className="stat-stack">
           {stats.map((s, i) => (
-            <div key={s.label} className="card stat" style={{ background: ["#DCFF73", "#B9FDF9", "#FFC75A"][i % 3], "--tilt": `${[-2, 1.5, -1][i % 3]}deg` } as React.CSSProperties}>
+            <div key={s.label} className="card stat" style={tint(["#dcff73", "#bfaaea", "#ffc75a"][i % 3])}>
+              <IconTile name={["layers", "rocket", "code"][i % 3]} tint={["#dcff73", "#bfaaea", "#ffc75a"][i % 3]} />
               <b>{s.value}</b><span>{s.label}</span>
             </div>
           ))}
+          <Doodle shape="dashes" color="#7ccf5a" size={34} style={{ right: "-1.2em", top: "-1.8em" }} />
         </div>
       </Col>
-      <Col street={<><Signpost text="school" color="#B9FDF9" left="50%" /><Sprout left="86%" flower="#FC7B1E" /></>}>
+      <Col street={<Signpost text="school" color="#b9fdf9" left="50%" />}>
         <div className="edu-stack">
           {education.map((e, i) => (
-            <div key={e.title} className="card edu" style={{ "--tilt": `${[1, -1.2][i % 2]}deg` } as React.CSSProperties}>
-              <span className="pill" style={{ background: ["#FF5CAB", "#2FE3F8"][i % 2] }}>{e.period}</span>
-              <h3>{e.title}</h3>
-              <p className="edu-place">{e.place}</p>
-              <p>{e.note}</p>
+            <div key={e.title} className="card edu">
+              <IconTile name={i ? "briefcase" : "cap"} tint={i ? "#bfaaea" : "#ff5cab"} />
+              <div>
+                <span className="pill" style={tint(i ? "#bfaaea" : "#ff5cab")}>{e.period}</span>
+                <h3>{e.title}</h3>
+                <p className="edu-place">{e.place}</p>
+                <p className="edu-note">{e.note}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -90,33 +94,35 @@ export function About() {
 function ChatBot() {
   return (
     <svg viewBox="0 0 120 120" className="bot" aria-hidden>
-      <path d="M60 10v14" stroke="#111" strokeWidth="5" strokeLinecap="round" />
-      <circle cx="60" cy="9" r="7" fill="#FF5CAB" stroke="#111" strokeWidth="4" />
-      <path d="M22 26h76a12 12 0 0 1 12 12v40a12 12 0 0 1-12 12H62l-20 20V90H22a12 12 0 0 1-12-12V38a12 12 0 0 1 12-12z"
-        fill="#BFAAEA" stroke="#111" strokeWidth="5" strokeLinejoin="round" />
-      <circle cx="42" cy="54" r="7" fill="#111" /><circle cx="78" cy="54" r="7" fill="#111" />
-      <circle cx="44" cy="52" r="2.2" fill="#fff" /><circle cx="80" cy="52" r="2.2" fill="#fff" />
-      <path d="M48 70q12 10 24 0" fill="none" stroke="#111" strokeWidth="4.5" strokeLinecap="round" />
-      <circle cx="30" cy="66" r="5" fill="#FF5CAB" opacity=".7" /><circle cx="90" cy="66" r="5" fill="#FF5CAB" opacity=".7" />
+      <defs>
+        <linearGradient id="botg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#d9c8ff" /><stop offset="1" stopColor="#a98af0" /></linearGradient>
+      </defs>
+      <path d="M60 12v12" stroke="#7a5bd0" strokeWidth="4.5" strokeLinecap="round" />
+      <circle cx="60" cy="10" r="7" fill="#ff7ab8" />
+      <path d="M22 26h76a12 12 0 0 1 12 12v40a12 12 0 0 1-12 12H62l-20 20V90H22a12 12 0 0 1-12-12V38a12 12 0 0 1 12-12z" fill="url(#botg)" />
+      <ellipse cx="38" cy="38" rx="14" ry="6" fill="#fff" opacity=".35" />
+      <circle cx="42" cy="56" r="7" fill="#2a1633" /><circle cx="78" cy="56" r="7" fill="#2a1633" />
+      <circle cx="44" cy="54" r="2.4" fill="#fff" /><circle cx="80" cy="54" r="2.4" fill="#fff" />
+      <path d="M48 71q12 10 24 0" fill="none" stroke="#2a1633" strokeWidth="4.5" strokeLinecap="round" />
+      <circle cx="29" cy="68" r="5.5" fill="#ff8ec4" opacity=".6" /><circle cx="91" cy="68" r="5.5" fill="#ff8ec4" opacity=".6" />
     </svg>
   );
 }
 
 export function Products() {
   return (
-    <Scene id="products" tint="#FFC75A">
+    <Scene id="products">
       <Chapter
-        no="02" kicker="my little zoo"
-        title={<>things I built<br />&amp; <mark style={{ background: "#FFC75A" }}>launched</mark></>}
+        no="02" kicker="My Little Zoo"
+        title={<>Things I Built<br />&amp; <mark className="hl-amber">Launched</mark></>}
         text="Three products of my own. Two of them came with friends."
-        street={<><Sprout left="26%" flower="#2FE3F8" /><Sprout left="76%" color="#DCFF73" /></>}
       />
       {products.map((p, i) => (
         <Col
           key={p.name}
           street={
             <div className={`prop mascot mascot-${i}`}>
-              <span className="mascot-says hand">{p.mascotSays}</span>
+              <span className="mascot-says">{p.mascotSays}</span>
               <div className="mascot-body">
                 {p.mascot
                   // eslint-disable-next-line @next/next/no-img-element
@@ -127,13 +133,14 @@ export function Products() {
             </div>
           }
         >
-          <article className="card product" style={{ "--tilt": `${[-0.8, 0.6, -0.5][i % 3]}deg` } as React.CSSProperties}>
-            <header style={{ background: p.color }}>
+          <article className="card product" style={tint(p.color)}>
+            <header>
+              <IconTile name={["rocket", "bolt", "mail"][i % 3]} tint={p.color} />
               <div>
                 <h3>{p.name}</h3>
                 <p>{p.tagline}</p>
               </div>
-              <span className="product-no hand">no.{i + 1}</span>
+              <span className="product-no">No. {i + 1}</span>
             </header>
             <ul>{p.points.map((pt) => <li key={pt}>{pt}</li>)}</ul>
             <div className="chips">{p.stack.map((s) => <span key={s}>{s}</span>)}</div>
@@ -148,26 +155,23 @@ export function Products() {
 /* ── 03 · Journey ────────────────────────────────────────────── */
 export function Journey() {
   return (
-    <Scene id="journey" tint="#BBFFC6">
+    <Scene id="journey">
       <Chapter
-        no="03" kicker="keep walking"
-        title={<>the road<br /><mark style={{ background: "#BBFFC6" }}>so far</mark></>}
+        no="03" kicker="Keep Walking"
+        title={<>The Road<br /><mark className="hl-mint">So Far</mark></>}
         text="Oldest stop first. Follow the signs."
-        street={<><Sprout left="30%" flower="#FF5CAB" /><Sprout left="80%" /></>}
       />
       {experience.map((x, i) => (
-        <Col
-          key={x.role}
-          street={<>
-            <Signpost text={x.sign} color={x.color} left="22%" />
-            <Sprout left="70%" flower={i % 2 ? "#FFC75A" : undefined} color={i % 2 ? "#BBFFC6" : "#DCFF73"} />
-          </>}
-        >
-          <article className="card job" style={{ "--tilt": `${[0.7, -0.9, 0.5, -0.6][i % 4]}deg` } as React.CSSProperties}>
-            <span className="pill" style={{ background: x.color }}>{x.period}</span>
+        <Col key={x.role} street={<Signpost text={x.sign} color={x.color} left="22%" />}>
+          <article className="card job" style={tint(x.color)}>
+            <div className="job-top">
+              <IconTile name="briefcase" tint={x.color} />
+              <span className="pill">{x.period}</span>
+            </div>
             <h3>{x.role}</h3>
             <p className="job-co">{x.company}</p>
             <ul>{x.points.map((pt) => <li key={pt}>{pt}</li>)}</ul>
+            {i === experience.length - 1 && <Doodle shape="heart" color="#ff5cab" size={38} float style={{ right: "-0.6em", top: "-1.1em" }} />}
           </article>
         </Col>
       ))}
@@ -178,24 +182,23 @@ export function Journey() {
 /* ── 04 · Builds ─────────────────────────────────────────────── */
 export function Builds() {
   return (
-    <Scene id="builds" tint="#2FE3F8">
+    <Scene id="builds">
       <Chapter
-        no="04" kicker="under the hood"
-        title={<>engineering<br /><mark style={{ background: "#2FE3F8" }}>deep-dives</mark></>}
-        street={<><Sprout left="28%" /><Sprout left="74%" flower="#FC7B1E" /></>}
+        no="04" kicker="Under The Hood"
+        title={<>Engineering<br /><mark className="hl-cyan">Deep-Dives</mark></>}
       />
       {builds.map((b, i) => (
         <Col
           key={b.name}
-          street={<>
-            <Doodle shape={i % 2 ? "flower" : "spark"} color={i % 2 ? "#FF5CAB" : "#FFC75A"} size={46} spin={!(i % 2)} float={!!(i % 2)} style={{ left: "58%", bottom: "50%" }} />
-            <Sprout left="24%" flower={i % 2 ? undefined : "#BFAAEA"} />
-          </>}
+          street={<Doodle shape={i % 2 ? "star" : "spark"} color={i % 2 ? "#ff8ec4" : "#ffc75a"} size={44} spin={!(i % 2)} float={!!(i % 2)} style={{ left: "58%", bottom: "55%" }} />}
         >
-          <article className="card build" style={{ "--tilt": `${[-0.7, 0.8][i % 2]}deg` } as React.CSSProperties}>
-            <header style={{ background: b.color }}>
-              <h3>{b.name}</h3>
-              <p>{b.meta}</p>
+          <article className="card build" style={tint(b.color)}>
+            <header>
+              <IconTile name={i ? "layers" : "cube"} tint={b.color} />
+              <div>
+                <h3>{b.name}</h3>
+                <p>{b.meta}</p>
+              </div>
             </header>
             <p className="build-text">{b.text}</p>
             <div className="chips">{b.stack.map((s) => <span key={s}>{s}</span>)}</div>
@@ -209,22 +212,21 @@ export function Builds() {
 /* ── 06 · Skills ─────────────────────────────────────────────── */
 export function Skills() {
   return (
-    <Scene id="skills" tint="#3792DD">
+    <Scene id="skills">
       <Chapter
-        no="06" kicker="what's in the bag"
-        title={<>my<br /><mark style={{ background: "#B9FDF9" }}>toolbox</mark></>}
-        street={<><Sprout left="30%" flower="#FFC75A" /><Sprout left="76%" /></>}
+        no="06" kicker="What's In The Bag"
+        title={<>My<br /><mark className="hl-ice">Toolbox</mark></>}
       />
       {skills.map((g, i) => (
         <Col
           key={g.group}
-          street={<>
-            <Doodle shape={(["star", "heart", "spark", "flower"] as const)[i % 4]} color={["#FFC75A", "#FF5CAB", "#DCFF73", "#BFAAEA"][i % 4]} size={42} float style={{ left: "40%", bottom: "48%" }} />
-            <Sprout left="76%" flower={i % 2 ? "#FF5CAB" : undefined} />
-          </>}
+          street={<Doodle shape={(["star", "heart", "spark", "dashes"] as const)[i % 4]} color={["#ffc75a", "#ff5cab", "#bfaaea", "#7ccf5a"][i % 4]} size={40} float style={{ left: "40%", bottom: "52%" }} />}
         >
-          <article className="card skill" style={{ "--tilt": `${[-1, 0.8, -0.6, 1][i % 4]}deg` } as React.CSSProperties}>
-            <h3 style={{ background: g.color }}>{g.group}</h3>
+          <article className="card skill" style={tint(g.color)}>
+            <h3>
+              <IconTile name={(["code", "layers", "bolt", "brush"] as const)[i % 4]} tint={g.color} />
+              {g.group}
+            </h3>
             <div className="chips big">{g.items.map((s) => <span key={s}>{s}</span>)}</div>
           </article>
         </Col>

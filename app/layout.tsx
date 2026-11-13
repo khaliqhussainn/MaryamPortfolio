@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Walk through the portfolio of Maryam Nadeem, a software developer in Karachi building AI products, RAG systems and playful web experiences.",
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#ffffff" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#fbeefa" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -16,7 +16,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Patrick+Hand&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>

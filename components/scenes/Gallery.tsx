@@ -4,7 +4,7 @@ import {
   designAndDevProjects, openSourceProjects, sqaProjects,
   type GalleryCategory, type GalleryItem,
 } from "@/data/content";
-import { Scene, Col, Chapter, Sprout, Doodle } from "./Bits";
+import { Scene, Col, Chapter, Doodle } from "./Bits";
 
 const all: GalleryItem[] = [...sqaProjects, ...openSourceProjects, ...designAndDevProjects];
 
@@ -13,13 +13,13 @@ const FILTERS: Filter[] = ["All", "UI/UX Design", "Development", "Open Source", 
 const count = (f: Filter) => (f === "All" ? all.length : all.filter((p) => p.category === f).length);
 
 const TAG_COLOR: Record<GalleryCategory, string> = {
-  "UI/UX Design": "#FF5CAB",
-  Development: "#2FE3F8",
-  "Open Source": "#DCFF73",
-  SQA: "#FFC75A",
+  "UI/UX Design": "#ffb3d9",
+  Development: "#a4eefa",
+  "Open Source": "#e6fda6",
+  SQA: "#ffdf9c",
 };
 
-function Card({ item, i }: { item: GalleryItem; i: number }) {
+function Card({ item }: { item: GalleryItem }) {
   const [broken, setBroken] = useState(false);
   const inner = (
     <>
@@ -39,11 +39,10 @@ function Card({ item, i }: { item: GalleryItem; i: number }) {
       </div>
     </>
   );
-  const style = { "--tilt": `${[-1.2, 0.8, -0.5, 1.3][i % 4]}deg` } as React.CSSProperties;
   return item.link ? (
-    <a className="card shot-card" style={style} href={item.link} target="_blank" rel="noopener noreferrer">{inner}</a>
+    <a className="card shot-card" href={item.link} target="_blank" rel="noopener noreferrer">{inner}</a>
   ) : (
-    <div className="card shot-card" style={style}>{inner}</div>
+    <div className="card shot-card">{inner}</div>
   );
 }
 
@@ -52,18 +51,16 @@ export default function Gallery() {
   const visible = filter === "All" ? all : all.filter((p) => p.category === filter);
 
   return (
-    <Scene id="work" tint="#FF5CAB">
+    <Scene id="work">
       <Chapter
-        no="05" kicker="the gallery"
-        title={<>everything<br />else I <mark style={{ background: "#FF5CAB" }}>made</mark></>}
-        street={<><Sprout left="20%" flower="#FFC75A" /><Sprout left="70%" color="#DCFF73" /></>}
+        no="05" kicker="The Gallery"
+        title={<>Everything<br />Else I <mark className="hl-pink">Made</mark></>}
       />
       <Col
         className="gallery-col"
         street={<>
-          <Doodle shape="star" color="#FFC75A" size={46} spin style={{ left: "12%", bottom: "52%" }} />
-          <Doodle shape="heart" color="#FF5CAB" size={40} float style={{ left: "46%", bottom: "40%" }} />
-          <Sprout left="30%" flower="#BFAAEA" /><Sprout left="62%" /><Sprout left="88%" flower="#2FE3F8" />
+          <Doodle shape="star" color="#ffc75a" size={46} spin style={{ left: "12%", bottom: "52%" }} />
+          <Doodle shape="heart" color="#ff5cab" size={40} float style={{ left: "46%", bottom: "40%" }} />
         </>}
       >
         <div className="gallery">
@@ -75,10 +72,10 @@ export default function Gallery() {
             ))}
           </div>
           <div className="shots">
-            {visible.map((p, i) => <Card key={p.category + p.title} item={p} i={i} />)}
+            {visible.map((p) => <Card key={p.category + p.title} item={p} />)}
             {visible.length === 0 && (
               <div className="card shot-empty">
-                <p className="hand">first contribution landing soon…</p>
+                <p>First contribution landing soon…</p>
                 <span>watch this space ✿</span>
               </div>
             )}

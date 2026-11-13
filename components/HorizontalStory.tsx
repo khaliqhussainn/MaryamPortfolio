@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { scroll, goTo } from "@/lib/scrollStore";
 import { profile } from "@/data/content";
 import Persona from "@/components/Persona";
+import { SceneryDefs, Meadow, Clouds, Petals } from "@/components/Scenery";
 
 const NAV = [
   { id: "about", label: "About" },
@@ -15,32 +16,42 @@ const NAV = [
 ];
 
 /* Vertical scroll (wheel, touch, keys) drives a horizontal track.
-   The page is as tall as the track is wide. */
+   The page is as tall as the track is wide. Each background layer
+   moves at its own speed, so the world has depth. */
 export default function HorizontalStory({ children }: { children: ReactNode }) {
   const wrap = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const sky = useRef<HTMLDivElement>(null);
+  const clouds = useRef<HTMLDivElement>(null);
+  const far = useRef<HTMLDivElement>(null);
+  const mid = useRef<HTMLDivElement>(null);
+  const petals = useRef<HTMLDivElement>(null);
+  const front = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLDivElement>(null);
   const hint = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState("hello");
   const [menu, setMenu] = useState(false);
+  const [trackW, setTrackW] = useState(0);
 
   useEffect(() => {
     const w = wrap.current!, t = track.current!;
+    const layers: [HTMLDivElement | null, number][] = [
+      [clouds.current, 0.2], [far.current, 0.32], [mid.current, 0.58], [petals.current, 0.78],
+    ];
     let scenes: { id: string; left: number }[] = [];
 
     const measure = () => {
       scroll.max = Math.max(0, t.scrollWidth - window.innerWidth);
       w.style.height = `${scroll.max + window.innerHeight}px`;
-      if (sky.current) sky.current.style.width = `${window.innerWidth + scroll.max * 0.35}px`;
+      for (const [el, k] of layers) if (el) el.style.width = `${window.innerWidth + scroll.max * k + 40}px`;
       scenes = Array.from(t.querySelectorAll<HTMLElement>("[data-scene]")).map((el) => ({
         id: el.id,
         left: el.offsetLeft,
       }));
     };
-    const ro = new ResizeObserver(measure);
+    const sync = () => { measure(); setTrackW(t.scrollWidth); };
+    const ro = new ResizeObserver(sync);
     ro.observe(t);
-    window.addEventListener("resize", measure);
+    window.addEventListener("resize", sync);
     measure();
 
     let raf = 0, last = performance.now(), current = "";
@@ -54,7 +65,8 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
       scroll.x = nx;
       scroll.v = nx - prev;
       t.style.transform = `translate3d(${-nx}px,0,0)`;
-      if (sky.current) sky.current.style.transform = `translate3d(${-nx * 0.35}px,0,0)`;
+      if (front.current) front.current.style.transform = `translate3d(${-nx}px,0,0)`;
+      for (const [el, k] of layers) if (el) el.style.transform = `translate3d(${-nx * k}px,0,0)`;
       if (bar.current) bar.current.style.transform = `scaleX(${scroll.max ? nx / scroll.max : 0})`;
       if (hint.current) hint.current.style.opacity = nx > 60 ? "0" : "1";
 
@@ -101,7 +113,7 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("resize", sync);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("touchstart", onTouchStart);
@@ -114,23 +126,28 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
 
   return (
     <div ref={wrap} className="story-wrap">
-      <div className="story-viewport">
-        {/* Slow-moving sky */}
-        <div ref={sky} className="sky" aria-hidden>
-          {Array.from({ length: 14 }).map((_, i) => (
-            <svg key={i} className="sky-cloud" viewBox="0 0 120 50"
-              style={{ left: `${i * 7.1 + 4.5}%`, top: `${[9, 20, 13, 26, 7, 18][i % 6]}%`, width: `${[90, 130, 70, 110][i % 4]}px` }}>
-              <path d="M18 44C4 44 2 28 14 25 12 12 30 6 38 16 46 2 72 4 76 18 92 10 110 24 100 36 112 40 108 46 98 44Z"
-                fill="#fff" stroke="#111" strokeWidth="2.5" strokeLinejoin="round" />
-            </svg>
-          ))}
-        </div>
+      <SceneryDefs />
+      <div className="story-viewport" data-chapter={active}>
+        {/* ── Living background: sky colour shifts with each chapter ── */}
+        <div className="sky-bg" aria-hidden />
+        <div ref={clouds} className="layer layer-clouds" aria-hidden><Clouds /></div>
+        <div ref={far} className="layer layer-far" aria-hidden />
+        <div ref={mid} className="layer layer-mid" aria-hidden />
+        <div ref={petals} className="layer layer-petals" aria-hidden><Petals /></div>
 
-        {/* The world */}
-        <div ref={track} className="story-track">{children}</div>
+        {/* ── The world ── */}
+        <div ref={track} className="story-track">
+          <Meadow width={trackW} layer="back" />
+          {children}
+        </div>
 
         {/* She walks with you */}
         <Persona />
+
+        {/* Flowers that brush past her feet */}
+        <div ref={front} className="front-wrap" aria-hidden>
+          <Meadow width={trackW} layer="front" />
+        </div>
 
         {/* Nav */}
         <header className="topnav">
@@ -143,16 +160,16 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
                 {n.label}
               </button>
             ))}
-            <a className="nav-resume" href={profile.resume} target="_blank" rel="noopener noreferrer">Resume ↓</a>
+            <a className="nav-resume" href={profile.resume} target="_blank" rel="noopener noreferrer">Resume ↗</a>
           </nav>
           <button className="menu-btn" onClick={() => setMenu(!menu)} aria-label="Toggle menu" aria-expanded={menu}>
-            {menu ? "close" : "menu"}
+            {menu ? "Close" : "Menu"}
           </button>
           <div className="progress" aria-hidden><div ref={bar} /></div>
         </header>
 
         <div ref={hint} className="scroll-hint" aria-hidden>
-          scroll to walk <span>→</span>
+          Scroll to walk <span>→</span>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { profile } from "@/data/content";
 import { goTo } from "@/lib/scrollStore";
-import { Scene, Col, Chapter, Sprout, Doodle, Signpost } from "./Bits";
+import { Scene, Col, Chapter, Doodle, Signpost } from "./Bits";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -29,19 +29,13 @@ export default function Contact() {
   };
 
   return (
-    <Scene id="contact" tint="#DCFF73">
+    <Scene id="contact">
       <Chapter
-        no="07" kicker="the end (or the start?)"
-        title={<>let&apos;s build<br />something <mark style={{ background: "#DCFF73" }}>together</mark></>}
+        no="07" kicker="The End (Or The Start?)"
+        title={<>Let&apos;s Build<br />Something <mark className="hl-lime">Together</mark></>}
         text="Got a project, a role, or just a question? My inbox is open."
-        street={<><Sprout left="24%" flower="#FF5CAB" /><Sprout left="72%" /></>}
       />
-      <Col
-        street={<>
-          <Signpost text="say hi!" color="#FF5CAB" left="50%" />
-          <Sprout left="14%" flower="#BFAAEA" />
-        </>}
-      >
+      <Col street={<Signpost text="say hi!" color="#ffb3d9" left="50%" />}>
         <form className="card contact-card" onSubmit={submit}>
           {status === "sent" ? (
             <div className="sent">
@@ -79,9 +73,8 @@ export default function Contact() {
       <Col
         className="outro"
         street={<>
-          <Doodle shape="heart" color="#FF5CAB" size={48} float style={{ left: "18%", bottom: "50%" }} />
-          <Doodle shape="star" color="#FFC75A" size={40} spin style={{ left: "66%", bottom: "62%" }} />
-          <Sprout left="40%" flower="#2FE3F8" /><Sprout left="82%" color="#BBFFC6" />
+          <Doodle shape="heart" color="#ff5cab" size={48} float style={{ left: "18%", bottom: "50%" }} />
+          <Doodle shape="star" color="#ffc75a" size={40} spin style={{ left: "66%", bottom: "62%" }} />
         </>}
       >
         <div className="outro-inner">
@@ -89,11 +82,11 @@ export default function Contact() {
           <div className="socials">
             {profile.socials.map((s, i) => (
               <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                style={{ background: ["#B9FDF9", "#BFAAEA", "#FFC75A"][i % 3] }}>{s.label} ↗</a>
+                style={{ background: ["#b9fdf9", "#d9c8ff", "#ffe0a3"][i % 3] }}>{s.label} ↗</a>
             ))}
           </div>
-          <p className="hand thanks">thanks for walking with me!</p>
-          <button className="btn" onClick={() => goTo("hello")}>↺ walk it again</button>
+          <p className="thanks">Thanks for walking with me!</p>
+          <button className="btn" onClick={() => goTo("hello")}>↺ Walk it again</button>
           <p className="copyright">© {new Date().getFullYear()} {profile.name}</p>
         </div>
       </Col>
