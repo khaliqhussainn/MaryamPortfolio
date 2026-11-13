@@ -398,6 +398,7 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
   border-radius: 0.7em; border: 3px solid #fff; box-shadow: 0 6px 14px rgba(80, 40, 110, 0.18);
   transform: rotate(calc((var(--n) - 1) * 5deg)); transition: transform 0.4s cubic-bezier(.3, 1.4, .5, 1);
 }
+.folder-peek img.logo { object-fit: contain; object-position: center; background: #fff; padding: 12%; }
 .folder:hover .folder-peek img { transform: translateY(-9%) rotate(calc((var(--n) - 1) * 8deg)); }
 .folder.open .folder-peek img { transform: translateY(-22%) rotate(calc((var(--n) - 1) * 11deg)); }
 .folder-front {

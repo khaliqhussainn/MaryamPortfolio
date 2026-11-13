@@ -63,7 +63,7 @@ function Folder({ id, items, open, onToggle }: { id: FolderId; items: GalleryIte
       <span className="folder-peek" aria-hidden>
         {items.slice(0, 3).map((p, i) => (
           // eslint-disable-next-line @next/next/no-img-element
-          <img key={p.title} src={p.img} alt="" loading="lazy" style={{ "--n": i } as CSSProperties} />
+          <img key={p.title} className={p.logoOnly ? "logo" : ""} src={p.img} alt="" loading="lazy" style={{ "--n": i } as CSSProperties} />
         ))}
       </span>
       <span className="folder-front">

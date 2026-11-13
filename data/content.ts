@@ -173,10 +173,12 @@ export interface GalleryItem {
 }
 
 /* The gallery folders. Click one and it opens to show what's inside. */
-export type FolderId = "figma" | "beginner";
+export type FolderId = "proud" | "figma" | "beginner" | "sqa";
 export const folders: Record<FolderId, { name: string; note: string; color: string }> = {
+  proud: { name: "Proud Of", note: "The ones I'm proudest of", color: "#FF8EC4" },
   figma: { name: "Figma Designs", note: "UI/UX concepts & client designs", color: "#BFAAEA" },
-  beginner: { name: "Beginner Days", note: "My very first websites, 2022 – 2023", color: "#FFC75A" },
+  beginner: { name: "Beginner Days", note: "My very first websites, 2022 – 2024", color: "#FFC75A" },
+  sqa: { name: "SQA", note: "Websites I tested & documented", color: "#7FDDE8" },
 };
 
 /* SQA — websites I tested. Card shows just the logo and opens the
@@ -192,6 +194,7 @@ export const sqaProjects: GalleryItem[] = [
     img: "/usectl.png", // upload to /public
     link: "https://github.com/maryumxx", // TODO: replace with the test-docs repo URL
     logoOnly: true,
+    folder: "sqa",
   },
 ];
 
@@ -211,13 +214,14 @@ export const openSourceProjects: GalleryItem[] = [
 ];
 
 /* Design & development work.
-   Shown on its own = no folder. Add  folder: "figma"  or  folder: "beginner"  to tuck one into a folder. */
+   Every project picks a folder:  folder: "proud" | "figma" | "beginner" | "sqa".  Leave the field out to show one on its own. */
 export const designAndDevProjects: GalleryItem[] = [
-  /* recent work, shown on its own */
-  { title: "Taskflow", subtitle: "Task Management App", category: "Development", year: "2026", tags: ["Next.js", "TypeScript"], img: "/images/taskflow.jpeg", link: "https://taskflowtodo.vercel.app/" },
-  { title: "Comforty", subtitle: "E-Commerce Website", category: "UI/UX Design", year: "2024", tags: ["Figma", "e-Commerce"], img: "/images/comforty.jpeg", link: "https://mxryxms-capstone-project.vercel.app/" },
-  { title: "Exclusive", subtitle: "E-Commerce Website", category: "Development", year: "2024", tags: ["Tailwind CSS", "e-Commerce"], img: "/images/exclusive.jpeg", link: "https://mxryxms-nextjs-ecommerce.vercel.app/" },
-  { title: "Landscape", subtitle: "Dynamic Blog Website", category: "Development", year: "2024", tags: ["Next.js", "Blog"], img: "/images/landscape.jpeg", link: "https://dynamic-blog-green.vercel.app/" },
+  /* Proud Of folder */
+  { title: "Taskflow", subtitle: "Task Management App", category: "Development", year: "2026", tags: ["Next.js", "TypeScript"], img: "/images/taskflow.jpeg", link: "https://taskflowtodo.vercel.app/", folder: "proud" },
+  { title: "Comforty", subtitle: "E-Commerce Website", category: "UI/UX Design", year: "2024", tags: ["Figma", "e-Commerce"], img: "/images/comforty.jpeg", link: "https://mxryxms-capstone-project.vercel.app/", folder: "beginner" },
+  { title: "Exclusive", subtitle: "E-Commerce Website", category: "Development", year: "2024", tags: ["Tailwind CSS", "e-Commerce"], img: "/images/exclusive.jpeg", link: "https://mxryxms-nextjs-ecommerce.vercel.app/", folder: "proud" },
+  { title: "Landscape", subtitle: "Dynamic Blog Website", category: "Development", year: "2024", tags: ["Next.js", "Blog"], img: "/images/landscape.jpeg", link: "https://dynamic-blog-green.vercel.app/", folder: "beginner" },
+
 
   /* Figma Designs folder */
   { title: "Farmware App", subtitle: "Cow Health Checker", category: "UI/UX Design", year: "2025", tags: ["Figma", "Agriculture"], img: "/images/farmwareapp.jpeg", link: "", folder: "figma" },
@@ -226,7 +230,8 @@ export const designAndDevProjects: GalleryItem[] = [
   { title: "Tax Lodge Online", subtitle: "E-Commerce Design", category: "UI/UX Design", year: "2024", tags: ["Figma", "Finance"], img: "/images/taxlodge.jpeg", link: "https://www.figma.com/design/cncW1woUEVgtBqhe3SZ19I/Tax-Lodge-Online", folder: "figma" },
   { title: "Wrap n Snap", subtitle: "E-Commerce UI Design", category: "UI/UX Design", year: "2023", tags: ["Figma", "e-Commerce"], img: "/images/wrapnsnap.jpeg", link: "https://www.figma.com/design/CNhhiIo7PSMXXguN4lqIxz/Portfolio-Template--Community-?node-id=101-412", folder: "figma" },
 
-  /* Beginner Days folder */
+
+  /* Beginner Days folder (Landscape and Comforty included) */
   { title: "Paws n Play", subtitle: "E-Commerce Website", category: "Development", year: "2023", tags: ["Tailwind CSS", "e-Commerce"], img: "/images/pawsnplay.jpeg", link: "https://furry-website.vercel.app/", folder: "beginner" },
   { title: "Travio", subtitle: "Travel Website", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/travio.jpeg", link: "https://first-next-app-ten-theta.vercel.app/", folder: "beginner" },
   { title: "Readie", subtitle: "Educational Website", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/readie.jpeg", link: "https://readie-iota.vercel.app/", folder: "beginner" },
