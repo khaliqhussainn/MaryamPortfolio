@@ -3,181 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type * as THREE_NS from "three";
 import { scroll, goTo } from "@/lib/scrollStore";
+import { buildCharacter, type Rig } from "@/components/personaModel";
 
 /* Shared with the render loop without re-rendering React */
 const live = { hover: false, px: 0, py: 0 };
-
-/* Colours sampled from the character sheet */
-const C = {
-  skin: 0xf9dfd0,
-  blush: 0xf2a3a8,
-  lips: 0xc9656f,
-  hijab: 0x17171a,
-  shirt: 0xecd8c5,
-  jeans: 0x425f8e,
-  shoe: 0xf6f3ee,
-  sole: 0xd9d2c8,
-  ring: 0xc79a55,
-  hair: 0x4a2a22,
-  ink: 0x111111,
-};
-
-type Rig = ReturnType<typeof buildCharacter>;
-
-function buildCharacter(THREE: typeof THREE_NS) {
-  /* Three flat tones = cel shading, to match the 2D art */
-  const ramp = new THREE.DataTexture(new Uint8Array([150, 215, 255]), 3, 1, THREE.RedFormat);
-  ramp.minFilter = ramp.magFilter = THREE.NearestFilter;
-  ramp.needsUpdate = true;
-  const toon = (color: number) => new THREE.MeshToonMaterial({ color, gradientMap: ramp });
-  const flat = (color: number) => new THREE.MeshBasicMaterial({ color });
-  const inkMat = new THREE.MeshBasicMaterial({ color: C.ink, side: THREE.BackSide });
-
-  /* A mesh with a thick black outline (inverted hull) */
-  const part = (geo: THREE_NS.BufferGeometry, mat: THREE_NS.Material, line = 0.034) => {
-    const m = new THREE.Mesh(geo, mat);
-    if (line > 0) {
-      geo.computeBoundingBox();
-      const s = geo.boundingBox!.getSize(new THREE.Vector3());
-      const o = new THREE.Mesh(geo, inkMat);
-      o.scale.set(1 + (2 * line) / s.x, 1 + (2 * line) / s.y, 1 + (2 * line) / s.z);
-      m.add(o);
-    }
-    return m;
-  };
-  const group = (parent: THREE_NS.Object3D, x = 0, y = 0, z = 0) => {
-    const g = new THREE.Group();
-    g.position.set(x, y, z);
-    parent.add(g);
-    return g;
-  };
-  const put = <T extends THREE_NS.Object3D>(parent: THREE_NS.Object3D, o: T, x = 0, y = 0, z = 0) => {
-    o.position.set(x, y, z);
-    parent.add(o);
-    return o;
-  };
-
-  const mSkin = toon(C.skin), mShirt = toon(C.shirt), mJeans = toon(C.jeans);
-  const mHijab = toon(C.hijab), mShoe = toon(C.shoe);
-
-  const root = new THREE.Group();
-
-  /* Soft ground shadow */
-  const shadow = new THREE.Mesh(
-    new THREE.CircleGeometry(0.62, 32),
-    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.13 }),
-  );
-  shadow.rotation.x = -Math.PI / 2;
-  shadow.scale.set(1, 0.42, 1);
-  shadow.position.y = 0.005;
-  root.add(shadow);
-
-  const body = group(root); // turns left / right
-  const hips = group(body, 0, 1.64, 0); // bobs
-
-  const pelvis = put(hips, part(new THREE.SphereGeometry(0.3, 24, 16), mJeans), 0, -0.02, 0);
-  pelvis.scale.set(1.08, 0.72, 0.82);
-
-  /* Legs with bell-bottoms */
-  const leg = (side: number) => {
-    const hip = group(hips, 0.165 * side, -0.06, 0);
-    put(hip, part(new THREE.CylinderGeometry(0.17, 0.135, 0.8, 20), mJeans), 0, -0.4, 0);
-    const knee = group(hip, 0, -0.78, 0);
-    put(knee, part(new THREE.SphereGeometry(0.135, 16, 12), mJeans, 0), 0, 0, 0);
-    put(knee, part(new THREE.CylinderGeometry(0.135, 0.34, 0.78, 24), mJeans), 0, -0.39, 0);
-    const shoe = put(knee, part(new THREE.SphereGeometry(0.2, 20, 14), mShoe), 0, -0.76, 0.17);
-    shoe.scale.set(0.72, 0.42, 1.25);
-    const sole = put(knee, part(new THREE.SphereGeometry(0.2, 16, 10), toon(C.sole), 0), 0, -0.8, 0.17);
-    sole.scale.set(0.7, 0.18, 1.22);
-    return { hip, knee };
-  };
-  const legL = leg(-1), legR = leg(1);
-
-  /* Loose button-down shirt */
-  const torso = group(hips);
-  const shirt = put(torso, part(new THREE.CylinderGeometry(0.3, 0.41, 1.04, 28), mShirt), 0, 0.4, 0);
-  shirt.scale.z = 0.7;
-  const shoulders = put(torso, part(new THREE.SphereGeometry(0.3, 24, 16), mShirt), 0, 0.88, 0);
-  shoulders.scale.set(1.42, 0.5, 0.74);
-  for (let i = 0; i < 4; i++)
-    put(torso, new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 8), flat(0x9c8672)), 0.02, 0.62 - i * 0.17, 0.215 + i * 0.016);
-
-  const arm = (side: number) => {
-    const shoulder = group(torso, 0.42 * side, 0.86, 0);
-    put(shoulder, part(new THREE.CapsuleGeometry(0.105, 0.42, 8, 16), mShirt), 0, -0.28, 0);
-    const elbow = group(shoulder, 0, -0.56, 0);
-    put(elbow, part(new THREE.CapsuleGeometry(0.1, 0.36, 8, 16), mShirt), 0, -0.24, 0);
-    put(elbow, part(new THREE.CylinderGeometry(0.108, 0.108, 0.09, 16), mShirt), 0, -0.47, 0);
-    put(elbow, part(new THREE.SphereGeometry(0.088, 16, 12), mSkin), 0, -0.6, 0);
-    return { shoulder, elbow };
-  };
-  const armL = arm(-1), armR = arm(1);
-
-  /* Scarf: wrap, knot with a gold ring, two hanging tails */
-  const wrapA = put(torso, new THREE.Mesh(new THREE.SphereGeometry(0.3, 24, 16), mHijab), 0, 0.98, 0.03);
-  wrapA.scale.set(1.5, 0.6, 1.05);
-  const wrapB = put(torso, new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), mHijab), -0.04, 0.86, 0.17);
-  wrapB.scale.set(1.5, 0.8, 0.7);
-  const ring = put(torso, new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.017, 10, 24), toon(C.ring)), -0.1, 0.74, 0.27);
-  ring.rotation.set(0.35, 0.2, 0);
-  const tail = group(torso, -0.1, 0.72, 0.25);
-  const tailA = put(tail, new THREE.Mesh(new THREE.CapsuleGeometry(0.1, 0.5, 8, 14), mHijab), -0.03, -0.34, 0);
-  tailA.scale.set(1.15, 1, 0.42);
-  tailA.rotation.z = -0.07;
-  const tailB = put(tail, new THREE.Mesh(new THREE.CapsuleGeometry(0.075, 0.3, 8, 14), mHijab), 0.1, -0.24, -0.01);
-  tailB.scale.set(1.1, 1, 0.42);
-  tailB.rotation.z = 0.12;
-
-  /* Head */
-  const head = group(torso, 0, 1.5, 0);
-  head.scale.setScalar(1.38);
-  const hood = put(head, new THREE.Mesh(new THREE.SphereGeometry(0.43, 32, 24), mHijab), 0, 0.03, -0.045);
-  hood.scale.set(1, 1.08, 1);
-  const drape = put(head, new THREE.Mesh(new THREE.SphereGeometry(0.34, 24, 16), mHijab), 0, -0.36, -0.14);
-  drape.scale.set(1.12, 1.1, 0.72);
-
-  const F = { x: 0, y: -0.02, z: 0.13, rx: 0.318, ry: 0.352, rz: 0.3 };
-  const face = put(head, new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), mSkin), F.x, F.y, F.z);
-  face.scale.set(F.rx, F.ry, F.rz);
-  /* Place a feature on the face surface */
-  const onFace = <T extends THREE_NS.Object3D>(o: T, x: number, y: number, lift = 0.004) => {
-    const k = Math.sqrt(Math.max(0, 1 - (x / F.rx) ** 2 - ((y - F.y) / F.ry) ** 2));
-    o.position.set(x, y, F.z + F.rz * k + lift);
-    o.rotation.y = (x / F.rx) * 0.75;
-    o.rotation.x = -((y - F.y) / F.ry) * 0.6;
-    head.add(o);
-    return o;
-  };
-  const hair = put(head, new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 12), toon(C.hair)), 0, 0.3, 0.24);
-  hair.scale.set(0.5, 0.55, 0.6);
-
-  const mInk = flat(C.ink);
-  const eye = (side: number) => {
-    const g = onFace(new THREE.Group(), 0.118 * side, 0.0);
-    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.046, 16, 12), mInk);
-    ball.scale.set(0.86, 1.12, 0.3);
-    g.add(ball);
-    put(g, new THREE.Mesh(new THREE.SphereGeometry(0.013, 8, 8), flat(0xffffff)), 0.014, 0.02, 0.014);
-    const lash = put(g, new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.014, 0.008), mInk), 0.045 * side, 0.04, 0);
-    lash.rotation.z = 0.5 * side;
-    return { g, ball };
-  };
-  const eyeL = eye(-1), eyeR = eye(1);
-  for (const side of [-1, 1]) {
-    const brow = onFace(new THREE.Mesh(new THREE.BoxGeometry(0.105, 0.02, 0.008), flat(0x2a1a17)), 0.12 * side, 0.115);
-    brow.rotation.z = -0.05 * side;
-    const blush = onFace(
-      new THREE.Mesh(new THREE.CircleGeometry(0.052, 20), new THREE.MeshBasicMaterial({ color: C.blush, transparent: true, opacity: 0.85 })),
-      0.175 * side, -0.1, 0.003,
-    );
-    blush.scale.set(1, 0.85, 1);
-  }
-  const mouth = onFace(new THREE.Mesh(new THREE.TorusGeometry(0.058, 0.013, 8, 20, Math.PI), flat(C.lips)), 0, -0.125);
-  mouth.rotation.z = Math.PI;
-  mouth.scale.set(1, 0.75, 1);
-
-  return { root, body, hips, torso, head, legL, legR, armL, armR, eyeL, eyeR, tail };
-}
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -205,10 +34,16 @@ export default function Persona() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       const scene = new THREE.Scene();
-      scene.add(new THREE.AmbientLight(0xffffff, 2.1));
-      const sun = new THREE.DirectionalLight(0xffffff, 1.5);
-      sun.position.set(-2.5, 4, 5);
-      scene.add(sun);
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xf1e2d6, 1.9));
+      const key = new THREE.DirectionalLight(0xfff6ee, 1.9);
+      key.position.set(-3, 5, 6);
+      scene.add(key);
+      const fill = new THREE.DirectionalLight(0xeef2ff, 0.55);
+      fill.position.set(4, 1.5, 3);
+      scene.add(fill);
+      const rimLight = new THREE.DirectionalLight(0xffffff, 1.1);
+      rimLight.position.set(1, 3, -5);
+      scene.add(rimLight);
 
       const camera = new THREE.PerspectiveCamera(24, 0.72, 0.1, 50);
       camera.position.set(0, 1.92, 11.6);
