@@ -26,6 +26,11 @@
   --feet: calc(var(--ground) - 3.4dvh); /* where she (and the props) stand */
   --fh: clamp(54px, 10.4dvh, 110px); /* base flower height */
   --stage-h: calc(100dvh - var(--street-h) - var(--nav-h));
+  /* Maryam's size and spot; the hut is sized and placed from these */
+  --ph: clamp(200px, 40dvh, 440px);
+  --hut-left: clamp(4px, 1.5vw, 28px);
+  --p-left: calc(var(--hut-left) + var(--ph) * 0.5763);
+  --hut-w: calc(var(--ph) * 1.670);
 
   --edge: 1.5px solid rgba(196, 160, 230, 0.42);
   --shadow: 0 16px 36px rgba(170, 120, 214, 0.15), 0 2px 6px rgba(170, 120, 214, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -170,9 +175,8 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 
 /* ─── Persona ────────────────────────────────────────────── */
 .persona {
-  --ph: clamp(200px, 40dvh, 440px);
   position: absolute; z-index: 30;
-  left: clamp(-10px, 3vw, 70px);
+  left: var(--p-left);
   bottom: calc(var(--feet) - var(--ph) * 0.104);
   height: var(--ph); width: calc(var(--ph) * 0.72);
   pointer-events: none;
@@ -186,11 +190,11 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 .pp-shadow { position: absolute; left: 14%; right: 14%; bottom: -1.4%; height: 3%; border-radius: 50%; background: rgba(110, 70, 140, 0.2); filter: blur(2px); }
 .persona-fallback { position: absolute; left: 50%; bottom: 11.5%; height: 74%; transform: translateX(-50%); }
 .persona-hit {
-  position: absolute; left: 28%; width: 44%; top: 14%; bottom: 11%;
+  position: absolute; left: 28%; width: 44%; top: calc(14% - var(--lift, 0) * 1%); bottom: calc(11% + var(--lift, 0) * 1%);
   background: none; border: 0; border-radius: 40%; pointer-events: auto;
 }
 .persona-cloud {
-  position: absolute; left: 58%; bottom: 84%; width: clamp(170px, 24dvh, 230px);
+  position: absolute; left: 58%; bottom: calc(84% + var(--lift, 0) * 1%); width: clamp(170px, 24dvh, 230px);
   transform-origin: 20% 100%; pointer-events: none; filter: drop-shadow(0 10px 14px rgba(150, 100, 190, 0.3));
 }
 .persona-cloud svg { display: block; width: 100%; overflow: visible; }
@@ -266,10 +270,17 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 
 /* ─── 00 Hello ───────────────────────────────────────────── */
 .hero { width: 100vw; }
-.hero .col-stage { padding: 1em clamp(20px, 7vw, 120px); }
+.hero .col-stage { padding: 1em clamp(20px, 4vw, 70px) 1em calc(var(--hut-left) + var(--hut-w) + clamp(20px, 3vw, 56px)); }
+/* the hut, cut from the reference art; its doorway lines up with where she stands */
+.hut {
+  position: absolute; z-index: 2; pointer-events: none; user-select: none;
+  left: var(--hut-left); width: var(--hut-w); height: auto;
+  bottom: calc(var(--feet) - var(--ph) * 0.0312);
+  filter: drop-shadow(0 18px 24px rgba(110, 70, 140, 0.16));
+}
 .wave { display: inline-block; transform-origin: 70% 80%; animation: wave 1.8s ease-in-out infinite; }
 @keyframes wave { 0%, 60%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(16deg); } 20%, 40% { transform: rotate(-8deg); } }
-.hero h1 { font-size: clamp(32px, min(7.6dvh, 5.6vw), 88px); line-height: 1.12; font-weight: 700; letter-spacing: -0.025em; margin: 0.35em 0 0.3em; color: #20102b; }
+.hero h1 { font-size: clamp(30px, min(7.6dvh, 4.6vw), 84px); line-height: 1.12; font-weight: 700; letter-spacing: -0.025em; margin: 0.35em 0 0.3em; color: #20102b; }
 .hero-role { font-size: 1.22em; font-weight: 600; }
 .hero-role span { display: block; font-weight: 600; font-size: 0.95em; color: var(--link); }
 .hero-cta { display: flex; gap: 1em; margin-top: 1.4em; flex-wrap: wrap; }
@@ -469,7 +480,7 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 /* ─── Small screens ──────────────────────────────────────── */
 @media (max-width: 860px) {
   :root { --nav-h: 56px; --street-h: 36dvh; }
-  .persona { --ph: clamp(190px, 37dvh, 400px); }
+  :root { --ph: clamp(160px, 29dvh, 300px); --hut-left: -4px; }
   .menu-btn { display: block; }
   .navlinks {
     position: absolute; top: calc(var(--nav-h) + 8px); right: 12px; flex-direction: column; align-items: stretch; gap: 2px;
@@ -481,13 +492,12 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
   .nav-resume { margin: 6px 0 0; text-align: center; }
   .col-stage { padding: 0.8em 1em 1em; gap: 1.2em; font-size: clamp(11px, 1.85dvh, 15.5px); }
   .chapter .col-stage { padding-left: 22px; }
-  .hero .col-stage { padding: 0.6em 22px; }
-  .hero h1 { font-size: clamp(30px, min(7.2dvh, 10.5vw), 60px); }
+  .hero .col-stage { padding: 0.4em 22px; align-items: flex-start; }
+  .hero h1 { font-size: clamp(26px, min(5.6dvh, 9vw), 52px); }
   .about-card { width: min(24em, 84vw); }
     .contact-card .row { grid-template-columns: 1fr; gap: 0.6em; }
   .contact-card textarea { height: 3.6em; }
-  .persona { left: -22px; }
-  .scroll-hint { font-size: 14px; }
+  .scroll-hint { font-size: 14px; bottom: 2.2dvh; right: 14px; }
 }
 @media (max-height: 520px) {
   :root { --street-h: 36dvh; --nav-h: 48px; }

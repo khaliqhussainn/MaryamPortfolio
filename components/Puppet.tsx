@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { createMotion, live, stepMotion, trackPointer } from "@/lib/personaMotion";
+import { intro, INTRO } from "@/lib/scrollStore";
 
 /* Maryam as a 2D cut-out puppet: her illustrations split into layers
    (public/art/puppet) that swing around these joints.
@@ -16,9 +17,11 @@ const J = {
 const SJ = { hip: "46% 51.6%", shoulder: "49% 27.7%", feet: "50.4% 99.7%" };
 
 const TURN = 0.22; // seconds for the little turn between views
+/* the hut's porch floor and the jump, in % of the puppet's height */
+const PORCH = 15.3, ARC = 13;
 
 type Part =
-  | "turn" | "front" | "side" | "flip" | "shadow"
+  | "hop" | "turn" | "front" | "side" | "flip" | "shadow"
   | "rig" | "legL" | "legR" | "upper" | "armL" | "armR" | "head" | "blink" | "wrap" | "tail"
   | "sRig" | "sLegFar" | "sLeg" | "sUpper" | "sArmFar" | "sArm" | "sBlink";
 
@@ -44,10 +47,45 @@ export default function Puppet({ box }: { box: React.RefObject<HTMLDivElement | 
       const w = m.walk, idle = 1 - w, t = m.t;
       const s = Math.sin(m.phase), c = Math.cos(m.phase);
 
+      /* ── the hut: standing on the porch, hopping out, hopping back in ── */
+      let lift = 0, ground = 0, squashY = 1, pose = 0, forceSide = false;
+      const it = intro.t;
+      if (intro.phase === "home") {
+        lift = ground = PORCH;
+      } else if (intro.phase === "leaving") {
+        forceSide = true;
+        if (it < INTRO.crouch) {
+          lift = ground = PORCH;
+          squashY = 1 - 0.09 * Math.sin((Math.PI * it) / INTRO.crouch);
+        } else {
+          const p = Math.min(1, (it - INTRO.crouch) / INTRO.air);
+          ground = PORCH * Math.max(0, 1 - p * 1.6);
+          lift = PORCH * (1 - p) + 4 * ARC * p * (1 - p);
+          squashY = 1 + 0.06 * Math.sin(Math.PI * p);
+          pose = Math.sin(Math.PI * Math.min(1, p * 1.15));
+        }
+      } else if (intro.phase === "out" && it < INTRO.land) {
+        squashY = 1 - 0.08 * Math.sin((Math.PI * it) / INTRO.land); // landing
+      } else if (intro.phase === "returning") {
+        if (it < INTRO.retCrouch) {
+          squashY = 1 - 0.08 * Math.sin((Math.PI * it) / INTRO.retCrouch);
+        } else {
+          const p = Math.min(1, (it - INTRO.retCrouch) / INTRO.retAir);
+          lift = PORCH * p + 4 * ARC * 0.8 * p * (1 - p);
+          ground = PORCH * Math.min(1, Math.max(0, p * 1.6 - 0.6));
+          squashY = 1 + 0.05 * Math.sin(Math.PI * p);
+        }
+      }
+      e.hop!.style.transform = `translateY(${-lift}%) scaleY(${squashY})`;
+      e.shadow!.style.bottom = `${ground - 1.4}%`;
+      e.shadow!.style.opacity = `${1 - Math.min(0.6, (lift - ground) / 30)}`;
+      box.current?.style.setProperty("--lift", (lift * 0.78).toFixed(2));
+
       /* ── side-on while walking, front-facing once she stops ── */
-      const want = sideOn ? m.walk > 0.22 : m.moving && m.walk > 0.5;
-      if (turn <= 0 && (want !== sideOn || (sideOn && want && m.dir !== facing))) {
-        wantSide = want; wantFacing = m.dir; turn = TURN; swapped = false;
+      const want = forceSide || (sideOn ? m.walk > 0.22 : m.moving && m.walk > 0.5);
+      const dir = forceSide ? 1 : m.dir;
+      if (turn <= 0 && (want !== sideOn || (sideOn && want && dir !== facing))) {
+        wantSide = want; wantFacing = dir; turn = TURN; swapped = false;
       }
       let squash = 1;
       if (turn > 0) {
@@ -84,14 +122,15 @@ export default function Puppet({ box }: { box: React.RefObject<HTMLDivElement | 
 
       if (sideOn || turn > 0) {
         /* ── side view: a proper stride ── */
-        const stride = 13 * w, swing = 17 * w;
-        const bob = `translateY(${(0.5 - Math.abs(s) * 1.2) * w}%)`;
-        e.sRig!.style.transform = `rotate(${0.8 * w}deg)`;
-        e.sLeg!.style.transform = `translateY(${-Math.max(0, c) * 1.1 * w}%) rotate(${-s * stride}deg)`;
-        e.sLegFar!.style.transform = `translateY(${-Math.max(0, -c) * 1.1 * w}%) rotate(${s * stride}deg)`;
-        e.sUpper!.style.transform = `${bob} rotate(${1.6 * w}deg)`;
-        e.sArm!.style.transform = `rotate(${s * swing}deg)`;
-        e.sArmFar!.style.transform = `${bob} rotate(${-s * swing}deg)`;
+        /* walking stride, blended into a leap pose while she jumps */
+        const ww = w * (1 - pose), stride = 13 * ww, swing = 17 * ww;
+        const bob = `translateY(${(0.5 - Math.abs(s) * 1.2) * ww}%)`;
+        e.sRig!.style.transform = `rotate(${0.8 * ww + 4 * pose}deg)`;
+        e.sLeg!.style.transform = `translateY(${-Math.max(0, c) * 1.1 * ww}%) rotate(${-s * stride - 20 * pose}deg)`;
+        e.sLegFar!.style.transform = `translateY(${-Math.max(0, -c) * 1.1 * ww}%) rotate(${s * stride + 17 * pose}deg)`;
+        e.sUpper!.style.transform = `${bob} rotate(${1.6 * ww + 2 * pose}deg)`;
+        e.sArm!.style.transform = `rotate(${s * swing - 48 * pose}deg)`;
+        e.sArmFar!.style.transform = `${bob} rotate(${-s * swing + 30 * pose}deg)`;
         e.sBlink!.style.opacity = m.blink > 0 ? "1" : "0";
       }
     };
@@ -107,6 +146,7 @@ export default function Puppet({ box }: { box: React.RefObject<HTMLDivElement | 
   return (
     <div className="puppet" aria-hidden>
       <div ref={set("shadow")} className="pp-shadow" />
+      <div ref={set("hop")} className="pp-group" style={{ transformOrigin: J.feet }}>
       <div ref={set("turn")} className="pp-group" style={{ transformOrigin: J.feet }}>
         {/* front view */}
         <div ref={set("front")} className="pp-view">
@@ -142,6 +182,7 @@ export default function Puppet({ box }: { box: React.RefObject<HTMLDivElement | 
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

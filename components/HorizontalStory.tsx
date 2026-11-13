@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { scroll, goTo } from "@/lib/scrollStore";
+import { scroll, goTo, intro, INTRO } from "@/lib/scrollStore";
 import { profile } from "@/data/content";
 import Persona from "@/components/Persona";
 import { SceneryDefs, Meadow, Clouds, Petals } from "@/components/Scenery";
@@ -53,12 +53,27 @@ export default function HorizontalStory({ children }: { children: ReactNode }) {
     ro.observe(t);
     window.addEventListener("resize", sync);
     measure();
+    if (window.scrollY > 2) intro.phase = "out";
 
     let raf = 0, last = performance.now(), current = "";
     const tick = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
-      const target = Math.max(0, Math.min(scroll.max, window.scrollY));
+      let target = Math.max(0, Math.min(scroll.max, window.scrollY));
+
+      /* opening: first scroll makes her hop out of the hut; the world waits for the crouch */
+      intro.t += dt;
+      if ((intro.phase === "home" || intro.phase === "returning") && target > 2) { intro.phase = "leaving"; intro.t = 0; }
+      if (intro.phase === "leaving") {
+        if (intro.t < INTRO.crouch) target = scroll.x;
+        if (intro.t >= INTRO.crouch + INTRO.air) { intro.phase = "out"; intro.t = 0; intro.still = 0; }
+      } else if (intro.phase === "out") {
+        intro.still = target < 1 && scroll.x < 1 ? intro.still + dt : 0;
+        if (intro.still > 0.45) { intro.phase = "returning"; intro.t = 0; }
+      } else if (intro.phase === "returning" && intro.t >= INTRO.retCrouch + INTRO.retAir) {
+        intro.phase = "home"; intro.t = 0;
+      }
+
       const prev = scroll.x;
       let nx = prev + (target - prev) * (1 - Math.exp(-dt * 9));
       if (Math.abs(target - nx) < 0.15) nx = target;

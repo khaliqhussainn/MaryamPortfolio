@@ -11,6 +11,9 @@ const tint = (c: string) => ({ "--tint": c }) as CSSProperties;
 export function Hello() {
   return (
     <Scene id="hello">
+      {/* her little hut: she starts in the doorway */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="hut" src="/art/hut.webp" alt="Maryam's little hut" />
       <Col
         className="hero"
         street={<>
