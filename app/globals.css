@@ -179,8 +179,10 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 }
 .persona canvas { width: 100%; height: 100%; display: block; }
 .puppet { position: absolute; left: 50%; bottom: 10%; height: 78%; aspect-ratio: 342 / 1000; transform: translateX(-50%); pointer-events: none; }
-.pp-group, .pp-layer { position: absolute; inset: 0; width: 100%; height: 100%; will-change: transform; }
+.pp-group, .pp-layer, .pp-view { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pp-group, .pp-layer { will-change: transform; }
 .pp-layer { display: block; user-select: none; -webkit-user-drag: none; }
+.pp-layer[src$="blink.webp"] { opacity: 0; } /* closed eyes start hidden; the blink sets inline opacity */
 .pp-shadow { position: absolute; left: 14%; right: 14%; bottom: -1.4%; height: 3%; border-radius: 50%; background: rgba(110, 70, 140, 0.2); filter: blur(2px); }
 .persona-fallback { position: absolute; left: 50%; bottom: 11.5%; height: 74%; transform: translateX(-50%); }
 .persona-hit {
