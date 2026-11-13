@@ -59,7 +59,7 @@ body {
 button { font: inherit; color: inherit; cursor: pointer; }
 a { color: inherit; }
 h1, h2, h3, h4, p, ul { margin: 0; }
-h1, h2, h3, h4, .btn, .pill, .signpost span, .mascot-says, .chapter-pill { font-family: var(--display); }
+h1, h2, h3, h4, .btn, .pill, .signpost span, .mascot-says, .chapter-kicker { font-family: var(--display); }
 mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 0.34em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .hl-pink  { background: color-mix(in srgb, var(--pink) 30%, #fff); }
 .hl-cyan  { background: color-mix(in srgb, var(--cyan) 34%, #fff); }
@@ -239,11 +239,7 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 /* ─── Chapter headings ───────────────────────────────────── */
 .chapter .col-stage { padding-left: clamp(28px, 7vw, 120px); padding-right: 1em; }
 .chapter-inner { position: relative; }
-.chapter-pill {
-  display: inline-flex; align-items: center; gap: 0.55em; padding: 0.55em 1.2em; border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72); border: var(--edge); box-shadow: 0 8px 18px rgba(170, 120, 214, 0.14);
-  font-weight: 600; font-size: 1.02em; white-space: nowrap;
-}
+.chapter-kicker { font-weight: 600; font-size: 1.15em; color: var(--ink-soft); white-space: nowrap; }
 .chapter-head { display: flex; align-items: flex-start; margin-top: 0.9em; }
 .chapter-title { font-size: clamp(34px, 8.2dvh, 78px); line-height: 1.16; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; color: #20102b; }
 .chapter-text { margin-top: 1em; max-width: 19em; font-size: 1.12em; color: var(--ink-soft); }

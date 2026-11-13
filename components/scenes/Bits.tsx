@@ -53,13 +53,13 @@ export function IconTile({ name, tint }: { name: string; tint: string }) {
 }
 
 /* Chapter heading column */
-export function Chapter({ no, kicker, title, text, street }: {
-  no: string; kicker: string; title: ReactNode; text?: string; street?: ReactNode;
+export function Chapter({ kicker, title, text, street }: {
+  no?: string; kicker: string; title: ReactNode; text?: string; street?: ReactNode;
 }) {
   return (
     <Col className="chapter" street={street}>
       <div className="chapter-inner">
-        <span className="chapter-pill"><Icon name="book" size={18} /> Chapter {no} — {kicker}</span>
+        <p className="chapter-kicker">{kicker}</p>
         <div className="chapter-head">
           <h2 className="chapter-title">{title}</h2>
           <Doodle shape="dashes" color="#ff5cab" size={30} style={{ position: "relative", marginLeft: "0.3em", alignSelf: "flex-start", marginTop: "0.5em" }} />
