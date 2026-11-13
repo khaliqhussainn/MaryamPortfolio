@@ -377,6 +377,53 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 .shot-info h4 { font-size: 1.05em; font-weight: 600; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 4.8em; }
 .shot-info p { font-size: 0.78em; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .shot-go { position: absolute; right: 0.9em; top: 0.6em; font-family: var(--display); font-weight: 600; font-size: 0.86em; color: var(--link); }
+/* folders: thumbnails peek out of a soft folder; click to open */
+.folder {
+  position: relative; display: block; padding: 0; text-align: left; font: inherit; color: var(--ink);
+  background: transparent; border: 0; box-shadow: none; overflow: visible; cursor: pointer; min-height: 0;
+}
+.folder:hover { box-shadow: none; }
+.folder-back {
+  position: absolute; inset: 9% 0 0 0; border-radius: 0.6em 1.4em 1.4em 1.4em;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--tint) 62%, #fff), color-mix(in srgb, var(--tint) 44%, #fff));
+  box-shadow: var(--shadow);
+}
+.folder-back::before {
+  content: ""; position: absolute; left: 0; top: -1.15em; width: 42%; height: 1.4em; border-radius: 0.7em 0.9em 0 0;
+  background: color-mix(in srgb, var(--tint) 62%, #fff);
+}
+.folder-peek { position: absolute; left: 9%; right: 9%; top: 15%; height: 55%; }
+.folder-peek img {
+  position: absolute; left: calc(var(--n) * 14%); top: calc(var(--n) * 5%); width: 66%; height: 100%; object-fit: cover; object-position: top;
+  border-radius: 0.7em; border: 3px solid #fff; box-shadow: 0 6px 14px rgba(80, 40, 110, 0.18);
+  transform: rotate(calc((var(--n) - 1) * 5deg)); transition: transform 0.4s cubic-bezier(.3, 1.4, .5, 1);
+}
+.folder:hover .folder-peek img { transform: translateY(-9%) rotate(calc((var(--n) - 1) * 8deg)); }
+.folder.open .folder-peek img { transform: translateY(-22%) rotate(calc((var(--n) - 1) * 11deg)); }
+.folder-front {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 58%; padding: 0.9em 1em 0.8em;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 0.1em;
+  border-radius: 1.2em 1.4em 1.4em 1.4em; border: 1.5px solid rgba(255, 255, 255, 0.75);
+  background: linear-gradient(170deg, color-mix(in srgb, var(--tint) 30%, #fff), color-mix(in srgb, var(--tint) 52%, #fff));
+  box-shadow: 0 -6px 18px color-mix(in srgb, var(--tint) 30%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transform-origin: 50% 100%; transition: transform 0.4s cubic-bezier(.3, 1.4, .5, 1);
+}
+.folder:hover .folder-front { transform: perspective(500px) rotateX(-8deg); }
+.folder.open .folder-front { transform: perspective(500px) rotateX(-20deg); }
+.folder-front b { font-family: var(--display); font-weight: 700; font-size: 1.2em; line-height: 1.1; }
+.folder-front small { font-size: 0.76em; font-weight: 600; color: var(--ink-soft); line-height: 1.3; }
+.folder-cta { margin-top: 0.35em; font-family: var(--display); font-weight: 600; font-size: 0.82em; color: var(--link); }
+.folder-count {
+  position: absolute; right: 0.9em; top: -0.95em; min-width: 1.9em; height: 1.9em; padding: 0 0.5em; border-radius: 999px;
+  display: grid; place-items: center; background: #fff; font-family: var(--display); font-weight: 700; font-size: 0.85em;
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--tint) 40%, transparent);
+}
+.shot-card.in-folder {
+  border-color: color-mix(in srgb, var(--tint) 70%, #fff);
+  background: color-mix(in srgb, var(--tint) 14%, #fff);
+  animation: pop-in 0.45s cubic-bezier(.3, 1.4, .5, 1) both;
+}
+@keyframes pop-in { from { opacity: 0; transform: translateX(-24px) scale(0.86); } to { opacity: 1; transform: none; } }
 .shot-empty { display: grid; place-content: center; text-align: center; padding: 1.5em; background: color-mix(in srgb, var(--lime) 55%, #fff); }
 .shot-empty p { font-family: var(--display); font-weight: 600; font-size: 1.4em; line-height: 1.15; }
 
@@ -447,6 +494,6 @@ mark { color: inherit; background: none; padding: 0.02em 0.24em; border-radius: 
 
 @media (prefers-reduced-motion: reduce) {
   .doodle, .m-fl, .cloud, .petal, .signpost span, .wave, .scroll-hint,
-  .mascot-body, .mascot-shadow, .mascot-says { animation: none !important; }
+  .mascot-body, .mascot-shadow, .mascot-says, .shot-card.in-folder { animation: none !important; }
   .story-viewport { transition: none; }
 }

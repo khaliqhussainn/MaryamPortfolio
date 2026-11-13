@@ -169,7 +169,15 @@ export interface GalleryItem {
   img: string; // screenshot, or a logo when logoOnly is true
   link: string; // "" = no link yet
   logoOnly?: boolean; // true = show the image as a small centered logo
+  folder?: FolderId; // leave out = shown on its own; or put it in a folder
 }
+
+/* The gallery folders. Click one and it opens to show what's inside. */
+export type FolderId = "figma" | "beginner";
+export const folders: Record<FolderId, { name: string; note: string; color: string }> = {
+  figma: { name: "Figma Designs", note: "UI/UX concepts & client designs", color: "#BFAAEA" },
+  beginner: { name: "Beginner Days", note: "My very first websites, 2022 – 2023", color: "#FFC75A" },
+};
 
 /* SQA — websites I tested. Card shows just the logo and opens the
    GitHub repo with the test documentation.
@@ -202,24 +210,31 @@ export const openSourceProjects: GalleryItem[] = [
   // },
 ];
 
+/* Design & development work.
+   Shown on its own = no folder. Add  folder: "figma"  or  folder: "beginner"  to tuck one into a folder. */
 export const designAndDevProjects: GalleryItem[] = [
+  /* recent work, shown on its own */
   { title: "Taskflow", subtitle: "Task Management App", category: "Development", year: "2026", tags: ["Next.js", "TypeScript"], img: "/images/taskflow.jpeg", link: "https://taskflowtodo.vercel.app/" },
   { title: "Comforty", subtitle: "E-Commerce Website", category: "UI/UX Design", year: "2024", tags: ["Figma", "e-Commerce"], img: "/images/comforty.jpeg", link: "https://mxryxms-capstone-project.vercel.app/" },
-  { title: "Farmware App", subtitle: "Cow Health Checker", category: "UI/UX Design", year: "2025", tags: ["Figma", "Agriculture"], img: "/images/farmwareapp.jpeg", link: "" },
-  { title: "Azeeza Hussaini Hospital", subtitle: "Hospital Website", category: "UI/UX Design", year: "2025", tags: ["Figma", "Healthcare"], img: "/images/azeezahussaini.jpeg", link: "https://www.figma.com/design/4EfbCDqZt9RJjZnXeup81u/Aziza-Hussaini-Hospital" },
-  { title: "Software Agency", subtitle: "Agency Website Design", category: "UI/UX Design", year: "2024", tags: ["Figma", "Agency"], img: "/images/softwareagency.jpeg", link: "https://www.figma.com/design/kDwlCYeR6LZREyCwoyIRqG/Software-Agency" },
-  { title: "Tax Lodge Online", subtitle: "E-Commerce Design", category: "UI/UX Design", year: "2024", tags: ["Figma", "Finance"], img: "/images/taxlodge.jpeg", link: "https://www.figma.com/design/cncW1woUEVgtBqhe3SZ19I/Tax-Lodge-Online" },
-  { title: "Wrap n Snap", subtitle: "E-Commerce UI Design", category: "UI/UX Design", year: "2023", tags: ["Figma", "e-Commerce"], img: "/images/wrapnsnap.jpeg", link: "https://www.figma.com/design/CNhhiIo7PSMXXguN4lqIxz/Portfolio-Template--Community-?node-id=101-412" },
-  { title: "Landscape", subtitle: "Dynamic Blog Website", category: "Development", year: "2024", tags: ["Next.js", "Blog"], img: "/images/landscape.jpeg", link: "https://dynamic-blog-green.vercel.app/" },
   { title: "Exclusive", subtitle: "E-Commerce Website", category: "Development", year: "2024", tags: ["Tailwind CSS", "e-Commerce"], img: "/images/exclusive.jpeg", link: "https://mxryxms-nextjs-ecommerce.vercel.app/" },
-  { title: "Paws n Play", subtitle: "E-Commerce Website", category: "Development", year: "2023", tags: ["Tailwind CSS", "e-Commerce"], img: "/images/pawsnplay.jpeg", link: "https://furry-website.vercel.app/" },
-  { title: "Travio", subtitle: "Travel Website", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/travio.jpeg", link: "https://first-next-app-ten-theta.vercel.app/" },
-  { title: "Readie", subtitle: "Educational Website", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/readie.jpeg", link: "https://readie-iota.vercel.app/" },
-  { title: "Photowall", subtitle: "Digital Photo Exhibition", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/photowall.jpeg", link: "https://artwall-topaz.vercel.app/" },
-  { title: "Mathex", subtitle: "Math Tool", category: "Development", year: "2023", tags: ["JavaScript", "CSS"], img: "/images/mathex.jpeg", link: "https://mathex-gilt.vercel.app/" },
-  { title: "Prosume", subtitle: "Resume Builder", category: "Development", year: "2023", tags: ["JavaScript", "CSS"], img: "/images/prosume.jpeg", link: "https://resumebuilder-sepia.vercel.app/" },
-  { title: "Personal Portfolio 2", subtitle: "Portfolio Website", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/personalportfolio2.jpeg", link: "https://mxryxms-personal-portfolio.vercel.app/" },
-  { title: "Portfolio (First)", subtitle: "Portfolio Website", category: "Development", year: "2022", tags: ["HTML", "CSS"], img: "/images/portfoliofirst.jpeg", link: "https://portfolio-maryam-nadeem.vercel.app/" },
+  { title: "Landscape", subtitle: "Dynamic Blog Website", category: "Development", year: "2024", tags: ["Next.js", "Blog"], img: "/images/landscape.jpeg", link: "https://dynamic-blog-green.vercel.app/" },
+
+  /* Figma Designs folder */
+  { title: "Farmware App", subtitle: "Cow Health Checker", category: "UI/UX Design", year: "2025", tags: ["Figma", "Agriculture"], img: "/images/farmwareapp.jpeg", link: "", folder: "figma" },
+  { title: "Azeeza Hussaini Hospital", subtitle: "Hospital Website", category: "UI/UX Design", year: "2025", tags: ["Figma", "Healthcare"], img: "/images/azeezahussaini.jpeg", link: "https://www.figma.com/design/4EfbCDqZt9RJjZnXeup81u/Aziza-Hussaini-Hospital", folder: "figma" },
+  { title: "Software Agency", subtitle: "Agency Website Design", category: "UI/UX Design", year: "2024", tags: ["Figma", "Agency"], img: "/images/softwareagency.jpeg", link: "https://www.figma.com/design/kDwlCYeR6LZREyCwoyIRqG/Software-Agency", folder: "figma" },
+  { title: "Tax Lodge Online", subtitle: "E-Commerce Design", category: "UI/UX Design", year: "2024", tags: ["Figma", "Finance"], img: "/images/taxlodge.jpeg", link: "https://www.figma.com/design/cncW1woUEVgtBqhe3SZ19I/Tax-Lodge-Online", folder: "figma" },
+  { title: "Wrap n Snap", subtitle: "E-Commerce UI Design", category: "UI/UX Design", year: "2023", tags: ["Figma", "e-Commerce"], img: "/images/wrapnsnap.jpeg", link: "https://www.figma.com/design/CNhhiIo7PSMXXguN4lqIxz/Portfolio-Template--Community-?node-id=101-412", folder: "figma" },
+
+  /* Beginner Days folder */
+  { title: "Paws n Play", subtitle: "E-Commerce Website", category: "Development", year: "2023", tags: ["Tailwind CSS", "e-Commerce"], img: "/images/pawsnplay.jpeg", link: "https://furry-website.vercel.app/", folder: "beginner" },
+  { title: "Travio", subtitle: "Travel Website", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/travio.jpeg", link: "https://first-next-app-ten-theta.vercel.app/", folder: "beginner" },
+  { title: "Readie", subtitle: "Educational Website", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/readie.jpeg", link: "https://readie-iota.vercel.app/", folder: "beginner" },
+  { title: "Photowall", subtitle: "Digital Photo Exhibition", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/photowall.jpeg", link: "https://artwall-topaz.vercel.app/", folder: "beginner" },
+  { title: "Mathex", subtitle: "Math Tool", category: "Development", year: "2023", tags: ["JavaScript", "CSS"], img: "/images/mathex.jpeg", link: "https://mathex-gilt.vercel.app/", folder: "beginner" },
+  { title: "Prosume", subtitle: "Resume Builder", category: "Development", year: "2023", tags: ["JavaScript", "CSS"], img: "/images/prosume.jpeg", link: "https://resumebuilder-sepia.vercel.app/", folder: "beginner" },
+  { title: "Personal Portfolio 2", subtitle: "Portfolio Website", category: "Development", year: "2023", tags: ["HTML", "CSS"], img: "/images/personalportfolio2.jpeg", link: "https://mxryxms-personal-portfolio.vercel.app/", folder: "beginner" },
+  { title: "Portfolio (First)", subtitle: "Portfolio Website", category: "Development", year: "2022", tags: ["HTML", "CSS"], img: "/images/portfoliofirst.jpeg", link: "https://portfolio-maryam-nadeem.vercel.app/", folder: "beginner" },
 ];
 
 /* ── Skills ─────────────────────────────────────────────────────── */

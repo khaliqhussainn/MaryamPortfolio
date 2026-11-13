@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import {
-  designAndDevProjects, openSourceProjects, sqaProjects,
-  type GalleryCategory, type GalleryItem,
+  designAndDevProjects, openSourceProjects, sqaProjects, folders,
+  type FolderId, type GalleryCategory, type GalleryItem,
 } from "@/data/content";
 import { Scene, Col, Chapter, Doodle } from "./Bits";
 
@@ -19,7 +19,7 @@ const TAG_COLOR: Record<GalleryCategory, string> = {
   SQA: "#ffdf9c",
 };
 
-function Card({ item }: { item: GalleryItem }) {
+function Card({ item, folder, i = 0 }: { item: GalleryItem; folder?: FolderId; i?: number }) {
   const [broken, setBroken] = useState(false);
   const inner = (
     <>
@@ -39,16 +39,51 @@ function Card({ item }: { item: GalleryItem }) {
       </div>
     </>
   );
+  const cls = `card shot-card ${folder ? "in-folder" : ""}`;
+  const style = folder ? ({ "--tint": folders[folder].color, animationDelay: `${i * 55}ms` } as CSSProperties) : undefined;
   return item.link ? (
-    <a className="card shot-card" href={item.link} target="_blank" rel="noopener noreferrer">{inner}</a>
+    <a className={cls} style={style} href={item.link} target="_blank" rel="noopener noreferrer">{inner}</a>
   ) : (
-    <div className="card shot-card">{inner}</div>
+    <div className={cls} style={style}>{inner}</div>
+  );
+}
+
+/* A folder card: thumbnails peek out of the top; click to open / close */
+function Folder({ id, items, open, onToggle }: { id: FolderId; items: GalleryItem[]; open: boolean; onToggle: () => void }) {
+  const f = folders[id];
+  return (
+    <button
+      className={`card folder ${open ? "open" : ""}`}
+      style={{ "--tint": f.color } as CSSProperties}
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-label={`${f.name}: ${items.length} projects. ${open ? "Close" : "Open"} folder`}
+    >
+      <span className="folder-back" />
+      <span className="folder-peek" aria-hidden>
+        {items.slice(0, 3).map((p, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={p.title} src={p.img} alt="" loading="lazy" style={{ "--n": i } as CSSProperties} />
+        ))}
+      </span>
+      <span className="folder-front">
+        <span className="folder-count">{items.length}</span>
+        <b>{f.name}</b>
+        <small>{f.note}</small>
+        <span className="folder-cta">{open ? "Close folder ↑" : "Open folder →"}</span>
+      </span>
+    </button>
   );
 }
 
 export default function Gallery() {
   const [filter, setFilter] = useState<Filter>("All");
+  const [open, setOpen] = useState<FolderId[]>([]);
+  const toggle = (id: FolderId) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]));
+
   const visible = filter === "All" ? all : all.filter((p) => p.category === filter);
+  const loose = visible.filter((p) => !p.folder);
+  const folderIds = (Object.keys(folders) as FolderId[]).filter((id) => visible.some((p) => p.folder === id));
 
   return (
     <Scene id="work">
@@ -72,7 +107,15 @@ export default function Gallery() {
             ))}
           </div>
           <div className="shots">
-            {visible.map((p) => <Card key={p.category + p.title} item={p} />)}
+            {loose.map((p) => <Card key={p.category + p.title} item={p} />)}
+            {folderIds.map((id) => {
+              const items = visible.filter((p) => p.folder === id);
+              const isOpen = open.includes(id);
+              return [
+                <Folder key={id} id={id} items={items} open={isOpen} onToggle={() => toggle(id)} />,
+                ...(isOpen ? items.map((p, i) => <Card key={id + p.title} item={p} folder={id} i={i} />) : []),
+              ];
+            })}
             {visible.length === 0 && (
               <div className="card shot-empty">
                 <p>First contribution landing soon…</p>
